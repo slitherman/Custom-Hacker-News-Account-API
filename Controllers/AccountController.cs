@@ -17,11 +17,11 @@ namespace Custom_Hacker_News_Account_API.Controllers
         public readonly PostRepository _postRepo;
         //public readonly CommentRepository _commentRepo;
 
-        public AccountController(AccountRepository accountRepo, PostRepository postRepo, /*CommentRepository commentRepo*/)
+        public AccountController(AccountRepository accountRepo, PostRepository postRepo)
         {
             _accountRepo = accountRepo;
             _postRepo = postRepo;
-            //_commentRepo = commentRepo;
+          
         }
 
         [HttpGet]
