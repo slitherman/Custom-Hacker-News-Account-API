@@ -123,16 +123,20 @@ namespace Custom_Hacker_News_Account_API.Repository
         }
        
 
-        public void CreateAccount(AccountInfoDTO accountDTO)
+        public AccountInfo CreateAccount(CreateAccountDTO accountDTO)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                AccountInfo accountInfo = accountDTO.AccountInfoAsDTOReverse();
-            
-            _dbContext.AccountInfos.Add(accountInfo);
-            _dbContext.SaveChanges();
-            transaction.Commit();
+                AccountInfoDTO accountInfoDTO = ManualMapper.CreateAccountAsAccountInfoDTO(accountDTO);
+
+                // Map AccountInfoDTO to AccountInfo entity
+                AccountInfo accountInfo = accountInfoDTO.AccountInfoAsDTOReverse();
+
+                _dbContext.AccountInfos.Add(accountInfo);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+                return accountInfo;
 
             }
             
@@ -144,28 +148,77 @@ namespace Custom_Hacker_News_Account_API.Repository
             }
         }
 
-        public void CreatePostAndUpdateAccountStatistics(Post post)
+        //public void CreatePostAndUpdateAccountStatistics(Post post)
+        //{
+        //    using var transaction = _dbContext.Database.BeginTransaction();
+
+        //    try
+        //    {
+                
+        //        _dbContext.Posts.Add(post);
+        //        _dbContext.SaveChanges();
+        //        var account = _dbContext.AccountInfos.Include(a =>
+        //        a.AccountStatistic).FirstOrDefault(
+        //            a => a.AccountId == post.AccountId);
+
+
+        //        if (account != null)
+        //        {
+        //            account.AccountStatistic.SubmissionCount++;
+        //            account.AccountStatistic.UpvotesReceived++;
+        //            account.AccountStatistic.Karma = account.AccountStatistic.UpvotesReceived * 2;
+        //            _dbContext.SaveChanges();
+
+                 
+        //        }
+
+        //        transaction.Commit();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        transaction.Rollback();
+        //        throw new Exception("Failed to create post and update account statistics.", ex);
+        //    }
+        //}
+        public void CalculateKarma(AccountInfo account)
+        {
+            account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived + account.AccountStatistic.SubmissionCount) * 2;
+        }
+        public void modifyAccountStats(int method, int accId)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
             try
             {
-                
-                _dbContext.Posts.Add(post);
                 _dbContext.SaveChanges();
                 var account = _dbContext.AccountInfos.Include(a =>
                 a.AccountStatistic).FirstOrDefault(
-                    a => a.AccountId == post.AccountId);
+                    a => a.AccountId == accId);
 
 
                 if (account != null)
                 {
-                    account.AccountStatistic.SubmissionCount++;
-                    account.AccountStatistic.UpvotesReceived++;
-                    account.AccountStatistic.Karma = account.AccountStatistic.UpvotesReceived * 2;
+                    switch (method)
+                    {
+                        case 1: //Creating a post increases these parameters
+                            account.AccountStatistic.SubmissionCount++;
+                            account.AccountStatistic.UpvotesReceived++;
+                            CalculateKarma(account);
+                            break;
+                        case 2: //Removing a Post reduces the users SubmissionCount and Upvotes recieved by 1 - To prevent Upvoteboosting
+                            account.AccountStatistic.SubmissionCount--;
+                            account.AccountStatistic.UpvotesReceived--;
+                            CalculateKarma(account);
+                            break;
+                        case 3: //This case gets used when a user upvotes a post - Ups upvotesrecieves with 1, and calculates the new karma
+                            account.AccountStatistic.UpvotesReceived++;
+                            CalculateKarma(account);
+                            break;
+                        default:
+                            throw new ArgumentException("Invalid case: " + method);
+                            
+                    }
                     _dbContext.SaveChanges();
-
-                 
                 }
 
                 transaction.Commit();
@@ -173,7 +226,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             catch (Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception("Failed to create post and update account statistics.", ex);
+                throw new Exception("Failed update account statistics.", ex);
             }
         }
 

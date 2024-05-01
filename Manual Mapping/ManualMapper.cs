@@ -30,6 +30,22 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 
         }
 
+        public static AccountInfoDTO CreateAccountAsAccountInfoDTO(CreateAccountDTO createAccountDTO)
+        {
+            return new AccountInfoDTO
+            {
+                AccountId = createAccountDTO.AccountId,
+                Username = createAccountDTO.Username,
+                Firstname = createAccountDTO.Firstname,
+                Lastname = createAccountDTO.Lastname,
+                BirthDate = createAccountDTO.BirthDate,
+                Email = createAccountDTO.Email,
+                Password = createAccountDTO.Password,
+                IsBanned = createAccountDTO.IsBanned,
+               
+            };
+        }
+
         public static AccountInfo AccountInfoAsDTOReverse(this AccountInfoDTO account)
         {
             return new AccountInfo

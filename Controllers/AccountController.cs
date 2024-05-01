@@ -13,18 +13,21 @@ namespace Custom_Hacker_News_Account_API.Controllers
     {
      
 
-        public readonly AccountRepository _repo;
+        public readonly AccountRepository _accountRepo;
+        public readonly PostRepository _postRepo;
+        //public readonly CommentRepository _commentRepo;
 
-        public AccountController(AccountRepository repo)
+        public AccountController(AccountRepository accountRepo, PostRepository postRepo, /*CommentRepository commentRepo*/)
         {
-            _repo = repo;
-          
+            _accountRepo = accountRepo;
+            _postRepo = postRepo;
+            //_commentRepo = commentRepo;
         }
 
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult GetAllAccounts()
         {
-            var accounts = _repo.GetAccounts();
+            var accounts = _accountRepo.GetAccounts();
             if (accounts == null)
             {
                 return NotFound();
@@ -34,9 +37,9 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [HttpGet("Stats/{id}")] 
-        public ActionResult GetStats(int id) {
+        public ActionResult GetAccStats(int id) {
 
-            var accountStats = _repo.GetAccountStats(id);
+            var accountStats = _accountRepo.GetAccountStats(id);
             if (accountStats == null)
             {
                 return NotFound();
@@ -45,9 +48,9 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetAccById(int id)
         {
-            var account = _repo.GetAccountById(id);
+            var account = _accountRepo.GetAccountById(id);
            
             if(account  == null)
             {
@@ -57,11 +60,11 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteAcc(int id)
         {
           try
             {
-                var account = _repo.DeleteAccount(id);
+                var account = _accountRepo.DeleteAccount(id);
                 return Ok(account);
             }
             catch(ArgumentNullException ex)
@@ -71,16 +74,16 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [HttpPut] 
-        public IActionResult Update([FromBody] AccountInfoDTO accountInfo, int id)
+        public IActionResult UpdateAcc([FromBody] AccountInfoDTO accountInfo, int id)
         {
             try
             {
-                var existingAccount = _repo.GetAccountById(id);
+                var existingAccount = _accountRepo.GetAccountById(id);
                 if (existingAccount == null)
                 {
                     return NotFound($"Account with id {id} not found.");
                 }
-                _repo.UpdateAccount(accountInfo, id);
+                _accountRepo.UpdateAccount(accountInfo, id);
                 return Ok(accountInfo);
 
             }
@@ -92,12 +95,12 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
       
 
-        [HttpPost("AddAccount")]
-        public IActionResult CreateAccount([FromBody] AccountInfoDTO accountDTO)
+        [HttpPost("Created")]
+        public IActionResult CreateAcc([FromBody] CreateAccountDTO accountDTO)
         {
             try
             {
-                _repo.CreateAccount(accountDTO);
+                _accountRepo.CreateAccount(accountDTO);
                 return Created("api/Account/GetAccountById", accountDTO);
             }
             catch (Exception ex)
