@@ -9,8 +9,6 @@ public partial class Post
 
     public string Title { get; set; } = null!;
 
-    public string Type { get; set; } = null!;
-
     public bool Dead { get; set; }
 
     public bool Deleted { get; set; }

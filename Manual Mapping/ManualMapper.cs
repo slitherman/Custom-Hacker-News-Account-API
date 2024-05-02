@@ -113,7 +113,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
 
                 PostId = accountPost.PostId,
                 Title = accountPost.Title,
-                Type = accountPost.Type,
+            
                 Dead = accountPost.Dead,
                 Deleted = accountPost.Deleted,
                 AccountId = accountPost.AccountId,
@@ -134,7 +134,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
 
                 PostId = accountPostdto.PostId,
                 Title = accountPostdto.Title,
-                Type = accountPostdto.Type,
+               
                 Dead = accountPostdto.Dead,
                 Deleted = accountPostdto.Deleted,
                 AccountId = accountPostdto.AccountId,

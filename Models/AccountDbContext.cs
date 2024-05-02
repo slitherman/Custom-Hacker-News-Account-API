@@ -119,10 +119,6 @@ public partial class AccountDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("type");
             entity.Property(e => e.Url)
                 .IsUnicode(false)
                 .HasColumnName("URL");
