@@ -1,6 +1,6 @@
 ﻿namespace Custom_Hacker_News_Account_API.Models.DTOS
 {
-    public class CreateAccountDTO
+    public class CreateAndUpdateAccountDTO
     {
         public int AccountId { get; set; }
 

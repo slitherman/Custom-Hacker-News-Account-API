@@ -19,6 +19,8 @@ public partial class AccountDbContext : DbContext
 
     public virtual DbSet<AccountStatistic> AccountStatistics { get; set; }
 
+    public virtual DbSet<Comment> Comments { get; set; }
+
     public virtual DbSet<Post> Posts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,16 +31,6 @@ public partial class AccountDbContext : DbContext
     {
         modelBuilder.Entity<AccountInfo>(entity =>
         {
-            modelBuilder.Entity<AccountInfo>()
-                .HasOne(a => a.AccountStatistic)
-                .WithOne(s => s.AccountStat)
-                .HasForeignKey<AccountStatistic>(s => s.AccountStatId);
-
-            modelBuilder.Entity<AccountInfo>()
-                .HasMany(a => a.Posts)
-                .WithOne(p => p.Account)
-                .HasForeignKey(p => p.AccountId);
-
             entity.HasKey(e => e.AccountId).HasName("PK__Account___46A222CDC7EC69D9");
 
             entity.ToTable("Account_Info");
@@ -89,6 +81,32 @@ public partial class AccountDbContext : DbContext
                 .HasConstraintName("FK_Account_Statistics_Account_Info1");
         });
 
+        modelBuilder.Entity<Comment>(entity =>
+        {
+            entity.Property(e => e.CommentId).HasColumnName("Comment_Id");
+            entity.Property(e => e.AccountId).HasColumnName("Account_Id");
+            entity.Property(e => e.Author)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Content)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.PostId).HasColumnName("Post_Id");
+            entity.Property(e => e.TimePosted)
+                .HasColumnType("datetime")
+                .HasColumnName("Time_Posted");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Comments)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Comments_Account_Info");
+
+            entity.HasOne(d => d.Post).WithMany(p => p.Comments)
+                .HasForeignKey(d => d.PostId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Comments_Posts");
+        });
+
         modelBuilder.Entity<Post>(entity =>
         {
             entity.HasKey(e => e.PostId).HasName("PK__Posts__3ED78766520D0850");
@@ -105,6 +123,9 @@ public partial class AccountDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("type");
+            entity.Property(e => e.Url)
+                .IsUnicode(false)
+                .HasColumnName("URL");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.AccountId)

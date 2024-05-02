@@ -1,4 +1,5 @@
-﻿using Custom_Hacker_News_Account_API.Models.DTOS;
+﻿using Custom_Hacker_News_Account_API.Models;
+using Custom_Hacker_News_Account_API.Models.DTOS;
 
 namespace Custom_Hacker_News_Account_API.Manual_Mapping
 {
@@ -30,7 +31,19 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 
         }
 
-        public static AccountInfoDTO CreateAccountAsAccountInfoDTO(CreateAccountDTO createAccountDTO)
+        public static CommentDTO CreateCommentAsCommentDTO(CreateAndUpdateCommentDTO createCommentDTO)
+        {
+            return new CommentDTO
+            {
+
+                Author = createCommentDTO.Author,
+                Content = createCommentDTO.Content,
+                TimePosted = createCommentDTO.TimePosted,
+                Upvotes = createCommentDTO.Upvotes,
+            };
+        }
+
+        public static AccountInfoDTO CreateAccountAsAccountInfoDTO(CreateAndUpdateAccountDTO createAccountDTO)
         {
             return new AccountInfoDTO
             {
@@ -63,6 +76,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
         }
 
 
+
         public static IEnumerable<AccountInfoDTO> AccountInfosAsDTOS(this IEnumerable<AccountInfo> accounts)
         {
 
@@ -77,7 +91,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             
         }
 
- 
+
         public static PostDTO PostAsDTO(this Post accountPost)
         {
             return new PostDTO
@@ -89,9 +103,15 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Dead = accountPost.Dead,
                 Deleted = accountPost.Deleted,
                 AccountId = accountPost.AccountId,
+                Account = accountPost.Account.AccountInfoAsDTO(),
+                Comments = accountPost.Comments.Select(x => CommentAsDTOReverse(x)).ToList(),
+
 
             };
         }
+
+           
+        
 
         public static Post PostAsDTOReserve(this PostDTO accountPostdto)
         {
@@ -124,11 +144,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
 
         }
 
-
-
-      
-
-
         public static AccountStatistic AccountStatAsDTORevese(this AccountStatisticDTO accountStat)
         {
             return new AccountStatistic
@@ -143,6 +158,102 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
 
             };
 
+        }
+
+
+        //public static Comment CommentAsDTO(this CommentDTO comment) {
+
+
+        //    return new Comment
+        //    {
+        //        CommentId = comment.CommentId,
+        //        AccountId = comment.AccountId,
+        //        PostId = comment.PostId,
+        //        Author = comment.Author,
+        //        Content = comment.Content,
+        //        TimePosted = comment.TimePosted,
+        //        Upvotes = comment.Upvotes,
+        //        Post = comment.Post.PostAsDTOReserve(),
+        //        Account = comment.Account.AccountInfoAsDTOReverse(),
+
+        //    };
+
+        //}
+
+
+
+        public static CommentDTO CommentAsDTOReverse(this Comment comment)
+        {
+            if (comment == null)
+            {
+                throw new ArgumentNullException(nameof(comment));
+            }
+
+            var mappedComment = new CommentDTO
+            {
+                CommentId = comment.CommentId,
+                AccountId = comment.AccountId,
+                PostId = comment.PostId,
+                Author = comment.Author,
+                Content = comment.Content,
+                TimePosted = comment.TimePosted,
+                Upvotes = comment.Upvotes
+            };
+
+            // Map nested Post and AccountInfo
+            if (comment.Post != null)
+            {
+                mappedComment.Post = comment.Post.PostAsDTO();
+            }
+            if (comment.Account != null)
+            {
+                mappedComment.Account = comment.Account.AccountInfoAsDTO();
+            }
+
+            return mappedComment;
+        }
+
+        public static Comment CommentAsDTO(this CommentDTO comment)
+        {
+            if (comment == null)
+            {
+                throw new ArgumentNullException(nameof(comment));
+            }
+
+            var mappedComment = new Comment
+            {
+                CommentId = comment.CommentId,
+                AccountId = comment.AccountId,
+                PostId = comment.PostId,
+                Author = comment.Author,
+                Content = comment.Content,
+                TimePosted = comment.TimePosted,
+                Upvotes = comment.Upvotes
+            };
+
+            // Map nested PostDTO and AccountInfoDTO
+            if (comment.Post != null)
+            {
+                mappedComment.Post = comment.Post.PostAsDTOReserve();
+            }
+            if (comment.Account != null)
+            {
+                mappedComment.Account = comment.Account.AccountInfoAsDTOReverse();
+            }
+
+            return mappedComment;
+        }
+
+        public static IEnumerable<Comment> CommentsAsDTOS(this IEnumerable<CommentDTO> comments)
+        {
+            var DTOS = new List<Comment>();
+
+            foreach (var comment in comments)
+            {
+                DTOS.Add(comment.CommentAsDTO());
+            }
+
+            return DTOS;
         }
 
 

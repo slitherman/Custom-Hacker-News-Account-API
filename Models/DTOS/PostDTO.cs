@@ -2,7 +2,7 @@
 {
     public class PostDTO
     {
-      public int PostId { get; set; }
+     public int PostId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -13,6 +13,10 @@
     public bool Deleted { get; set; }
 
     public int AccountId { get; set; }
+    public List<CommentDTO> Comments { get; set; }
+    public AccountInfoDTO Account { get; set; }
+
+
 
     }
 }

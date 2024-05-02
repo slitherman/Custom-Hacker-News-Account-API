@@ -14,37 +14,6 @@ namespace Custom_Hacker_News_Account_API.Repository
             _dbContext = DbContext;
         }
 
-
-        //public IEnumerable<AccountInfoDTO> GetAccounts()
-        //{
-        //    var accounts = _dbContext.AccountInfos.Include(ai => ai.AccountAddresses).ToList();
-
-        //    var accountDTOs = accounts.Select(account =>
-        //        new AccountInfoDTO
-        //        {
-        //            AccountId = account.AccountId,
-        //            Username = account.Username,
-        //            Firstname = account.Firstname,
-        //            Lastname = account.Lastname,
-        //            BirthDate = account.BirthDate,
-        //            Email = account.Email,
-        //            Password = account.Password,
-        //            IsBanned = account.IsBanned,
-        //            Addresses = account.AccountAddresses.Select(address =>
-        //                new AccountAddressDTO
-        //                {
-        //                    AddressId = address.AddressId,
-        //                    City = address.City,
-        //                    Zip = address.Zip,
-        //                    Street = address.Street,
-        //                    Country = address.Country
-        //                }).ToList()
-        //        });
-
-        //    return accountDTOs;
-        //}
-
-
         public IEnumerable<AccountInfoDTO> GetAccounts()
         {
          return _dbContext.AccountInfos.Include(a=> a.AccountStatistic).Select(a => a.AccountInfoAsDTO()).ToList();   
@@ -123,7 +92,7 @@ namespace Custom_Hacker_News_Account_API.Repository
         }
        
 
-        public AccountInfo CreateAccount(CreateAccountDTO accountDTO)
+        public AccountInfo CreateAccount(CreateAndUpdateAccountDTO accountDTO)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try
@@ -148,41 +117,11 @@ namespace Custom_Hacker_News_Account_API.Repository
             }
         }
 
-        //public void CreatePostAndUpdateAccountStatistics(Post post)
-        //{
-        //    using var transaction = _dbContext.Database.BeginTransaction();
-
-        //    try
-        //    {
-                
-        //        _dbContext.Posts.Add(post);
-        //        _dbContext.SaveChanges();
-        //        var account = _dbContext.AccountInfos.Include(a =>
-        //        a.AccountStatistic).FirstOrDefault(
-        //            a => a.AccountId == post.AccountId);
-
-
-        //        if (account != null)
-        //        {
-        //            account.AccountStatistic.SubmissionCount++;
-        //            account.AccountStatistic.UpvotesReceived++;
-        //            account.AccountStatistic.Karma = account.AccountStatistic.UpvotesReceived * 2;
-        //            _dbContext.SaveChanges();
-
-                 
-        //        }
-
-        //        transaction.Commit();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        transaction.Rollback();
-        //        throw new Exception("Failed to create post and update account statistics.", ex);
-        //    }
-        //}
         public void CalculateKarma(AccountInfo account)
         {
-            account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived + account.AccountStatistic.SubmissionCount) * 2;
+            account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived +
+                                              account.AccountStatistic.SubmissionCount + 
+                                              account.AccountStatistic.CommentCount) * 2;
         }
         public void modifyAccountStats(int method, int accId)
         {
@@ -214,6 +153,17 @@ namespace Custom_Hacker_News_Account_API.Repository
                             account.AccountStatistic.UpvotesReceived++;
                             CalculateKarma(account);
                             break;
+                        case 4: //Creating a comment increases these parameters
+                            account.AccountStatistic.CommentCount++;
+                            account.AccountStatistic.UpvotesReceived++;
+                            CalculateKarma(account);
+                            break;
+                        case 5: //Removing a Comment reduces the users CommentCount and Upvotes recieved by 1 - To prevent Upvoteboosting
+                            account.AccountStatistic.CommentCount--;
+                            account.AccountStatistic.UpvotesReceived--;
+                            CalculateKarma(account);
+                            break;
+
                         default:
                             throw new ArgumentException("Invalid case: " + method);
                             

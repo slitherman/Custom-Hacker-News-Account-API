@@ -1,4 +1,5 @@
 ﻿using Custom_Hacker_News_Account_API.Manual_Mapping;
+using Custom_Hacker_News_Account_API.Models;
 using Custom_Hacker_News_Account_API.Models.DTOS;
 using Custom_Hacker_News_Account_API.NewFolder;
 using Custom_Hacker_News_Account_API.Repository;
@@ -15,16 +16,17 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
         public readonly AccountRepository _accountRepo;
         public readonly PostRepository _postRepo;
-        //public readonly CommentRepository _commentRepo;
+        public readonly CommentRepository _commentRepo;
 
-        public AccountController(AccountRepository accountRepo, PostRepository postRepo)
+        public AccountController(AccountRepository accountRepo, PostRepository postRepo, CommentRepository commentRepo)
         {
             _accountRepo = accountRepo;
             _postRepo = postRepo;
+            _commentRepo = commentRepo;
           
         }
 
-        [HttpGet]
+        [HttpGet("GetAllAccounts")]
         public ActionResult GetAllAccounts()
         {
             var accounts = _accountRepo.GetAccounts();
@@ -36,7 +38,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
         }
 
-        [HttpGet("Stats/{id}")] 
+        [HttpGet("AccountStats/{id}")] 
         public ActionResult GetAccStats(int id) {
 
             var accountStats = _accountRepo.GetAccountStats(id);
@@ -47,7 +49,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(accountStats);        
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Account: {id}")]
         public IActionResult GetAccById(int id)
         {
             var account = _accountRepo.GetAccountById(id);
@@ -59,7 +61,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(account);
         }
 
-        [HttpDelete]
+        [HttpDelete("Delete Account")]
         public IActionResult DeleteAcc(int id)
         {
           try
@@ -73,7 +75,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-        [HttpPut] 
+        [HttpPut("UpdateAccount")] 
         public IActionResult UpdateAcc([FromBody] AccountInfoDTO accountInfo, int id)
         {
             try
@@ -95,8 +97,8 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
       
 
-        [HttpPost("Created")]
-        public IActionResult CreateAcc([FromBody] CreateAccountDTO accountDTO)
+        [HttpPost("CreatedAccount")]
+        public IActionResult CreateAcc([FromBody] CreateAndUpdateAccountDTO accountDTO)
         {
             try
             {
@@ -108,6 +110,132 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return StatusCode(500, $"An error occurred while creating the account: {ex.Message}");
             }
         }
+
+        [HttpPost("CreatedPost")]
+        public IActionResult CreatePost([FromBody] CreateAndUpdatePostDTO postDTO)
+        {
+            try
+            {
+                _postRepo.CreatePost(postDTO);
+                return Created("api/Post/GetPostById", postDTO);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while creating the account: {ex.Message}");
+            }
+        }
+        [HttpPut("UpdatePost")]
+        public IActionResult UpdatePost([FromBody] PostDTO postInfo, int id)
+        {
+            try
+            {
+                var existingPost = _postRepo.GetPostById(id);
+                if (existingPost == null)
+                {
+                    return NotFound($"Post with id {id} not found.");
+                }
+                _postRepo.UpdatePost(postInfo, id);
+                return Ok(postInfo);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("Delete Post")]
+        public IActionResult DeletePost(int id)
+        {
+            try
+            {
+                var post = _postRepo.DeletePost(id);
+                return Ok(post);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [HttpGet("Post: {id}")]
+        public IActionResult GetPostById(int id)
+        {
+            var post = _postRepo.GetPostById(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
+        }
+        [HttpGet("GetAllPosts")]
+        public ActionResult GetAllPosts()
+        {
+            var posts = _postRepo.GetAllPosts();
+            if (posts == null)
+            {
+                return NotFound();
+            }
+            return Ok(posts);
+
+        }
+        [HttpPut("Comment id: {id}")]
+        public IActionResult UpdateComment(int id, [FromBody] Comment commentToUpdate)
+        {
+            try
+            {
+                var updatedComment = _commentRepo.UpdateComment(id, commentToUpdate);
+                return Ok(updatedComment);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("Delete Comment")]
+        public IActionResult DeleteComment(int id)
+        {
+            try
+            {
+                var comment = _commentRepo.DeleteCommentById(id);
+                return Ok(comment);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("Comment: {id}")]
+        public IActionResult GetCommentById(int id)
+        {
+            var comment = _commentRepo.GetCommentById(id);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            return Ok(comment);
+        }
+
+        [HttpPost("CreatedComment")]
+        public IActionResult CreateComment([FromBody] CreateAndUpdateCommentDTO commentDTO)
+        {
+            try
+            {
+                _commentRepo.CreateComment(commentDTO);
+                return Created("api/Comment/GetCommentById", commentDTO);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while creating the comment: {ex.Message}");
+            }
+        }
+
 
     }
 

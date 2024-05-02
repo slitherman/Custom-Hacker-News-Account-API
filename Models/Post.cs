@@ -17,5 +17,11 @@ public partial class Post
 
     public int AccountId { get; set; }
 
+    public string Url { get; set; } = null!;
+
+    public int Upvotes { get; set; }
+
     public virtual AccountInfo Account { get; set; } = null!;
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

@@ -68,6 +68,11 @@ namespace Custom_Hacker_News_Account_API.Repository
         {
             return _dbContext.Posts.ToList();
         }
+
+        public IEnumerable<Post> GetAllCommentsInPost()
+        {
+            return _dbContext.Posts.Include(p => p.Comments);
+        }
         public void UpvoteRecieved(int id)
         {
             var post = GetPostById(id);
