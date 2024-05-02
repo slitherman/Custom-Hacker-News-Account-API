@@ -10,20 +10,26 @@ namespace Custom_Hacker_News_Account_API.Repository
         public readonly AccountDbContext _dbContext;
         public AccountRepository _accRepo { get; set; }
 
-        public PostRepository(AccountDbContext DbContext )
+        public PostRepository(AccountDbContext DbContext, AccountRepository repo )
         {
             _dbContext = DbContext;
-            
+            _accRepo = repo;
         }
 
-        public Post CreatePost(Post post)
+        public Post CreatePost(CreateAndUpdatePostDTO postToAdd)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
             try
             {
                 int method = 1;
-                 _dbContext.Posts.Add(post);
+
+                PostDTO postDTO = ManualMapper.MapCreatePostDTOToDTO(postToAdd);
+
+
+                Post post = postDTO.MapDTOToPost();
+
+                _dbContext.Posts.Add(post);
                 _accRepo.modifyAccountStats(method, post.AccountId);
                 transaction.Commit();
                 return post;
@@ -36,7 +42,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             }
 
         }
-        public Post GetPostById(int id)
+        public PostDTO GetPostById(int id)
         {
             var post = _dbContext.Posts.FirstOrDefault(p => p.PostId == id);
 
@@ -44,10 +50,10 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 throw new ArgumentNullException($"Could not get the specified post {post}");
             }
-
-            return post;
+            var postDTO = post.MapPostToDTO();
+            return postDTO;
         }
-        public Post DeletePost(int id)
+        public PostDTO DeletePost(int id)
         {
             var post = GetPostById(id);
             if (post == null)
@@ -55,23 +61,54 @@ namespace Custom_Hacker_News_Account_API.Repository
                 throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
             }
             int method = 2;
+
             _accRepo.modifyAccountStats(method, post.AccountId);
-            _dbContext.Posts.Remove(post);
+
+            var PostDTO = post.MapDTOToPost();
+            _dbContext.Posts.Remove(PostDTO);
             _dbContext.SaveChanges();
             return post;
         }
-        //public Post UpdatePost(int id)
-        //{
-
-        //}
-        public IEnumerable<Post> GetAllPosts()
+      
+        public Post UpdatePost(int id, CreateAndUpdatePostDTO postToUpdate)
         {
-            return _dbContext.Posts.ToList();
+
+
+            var existingPost = GetPostById(id);
+
+            if (existingPost == null)
+            {
+                throw new ArgumentNullException($"Could not find the specified post with the id {id}");
+            }
+
+            try
+            {
+                existingPost.Title = postToUpdate.Title;
+                existingPost.Url = postToUpdate.Url;
+          
+                PostDTO DTOToPOST = ManualMapper.MapCreatePostDTOToDTO(postToUpdate);
+
+                Post post = DTOToPOST.MapDTOToPost();
+                _dbContext.SaveChanges();
+                return post;
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Failed up update post", ex);
+            }
+
+
         }
 
-        public IEnumerable<Post> GetAllCommentsInPost()
+        public IEnumerable<PostDTO> GetAllPosts()
         {
-            return _dbContext.Posts.Include(p => p.Comments);
+            return _dbContext.Posts.Select(p => p.MapPostToDTO()).ToList();        
+        }
+
+        public IEnumerable<PostDTO> GetAllCommentsInPost()
+        {
+            return _dbContext.Posts.Include(p => p.Comments).Select(p => p.MapPostToDTO()).ToList();   
         }
         public void UpvoteRecieved(int id)
         {

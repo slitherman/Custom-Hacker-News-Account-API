@@ -15,6 +15,6 @@
 
         public DateTime TimePosted { get; set; }
 
-        public int Upvotes { get; set; }
+     
     }
 }

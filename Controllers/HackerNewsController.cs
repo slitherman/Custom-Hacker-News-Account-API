@@ -10,7 +10,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class HackerNewsController : ControllerBase
     {
      
 
@@ -18,7 +18,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
         public readonly PostRepository _postRepo;
         public readonly CommentRepository _commentRepo;
 
-        public AccountController(AccountRepository accountRepo, PostRepository postRepo, CommentRepository commentRepo)
+        public HackerNewsController(AccountRepository accountRepo, PostRepository postRepo, CommentRepository commentRepo)
         {
             _accountRepo = accountRepo;
             _postRepo = postRepo;
@@ -49,7 +49,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(accountStats);        
         }
 
-        [HttpGet("Account: {id}")]
+        [HttpGet("Account/{id}")]
         public IActionResult GetAccById(int id)
         {
             var account = _accountRepo.GetAccountById(id);
@@ -61,7 +61,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(account);
         }
 
-        [HttpDelete("Delete Account")]
+        [HttpDelete("DeleteAccount")]
         public IActionResult DeleteAcc(int id)
         {
           try
@@ -125,7 +125,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
         [HttpPut("UpdatePost")]
-        public IActionResult UpdatePost([FromBody] PostDTO postInfo, int id)
+        public IActionResult UpdatePost(int id, [FromBody] CreateAndUpdatePostDTO postInfo)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 {
                     return NotFound($"Post with id {id} not found.");
                 }
-                _postRepo.UpdatePost(postInfo, id);
+                _postRepo.UpdatePost(id, postInfo);
                 return Ok(postInfo);
 
             }
@@ -143,7 +143,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("Delete Post")]
+        [HttpDelete("DeletePost")]
         public IActionResult DeletePost(int id)
         {
             try
@@ -156,7 +156,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpGet("Post: {id}")]
+        [HttpGet("Post/{id}")]
         public IActionResult GetPostById(int id)
         {
             var post = _postRepo.GetPostById(id);
@@ -178,8 +178,8 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(posts);
 
         }
-        [HttpPut("Comment id: {id}")]
-        public IActionResult UpdateComment(int id, [FromBody] Comment commentToUpdate)
+        [HttpPut("UpdatedComment/{id}")]
+        public IActionResult UpdateComment(int id, [FromBody] CreateAndUpdateCommentDTO commentToUpdate)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-        [HttpDelete("Delete Comment")]
+        [HttpDelete("DeleteComment")]
         public IActionResult DeleteComment(int id)
         {
             try
@@ -210,7 +210,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-        [HttpGet("Comment: {id}")]
+        [HttpGet("Comment/{id}")]
         public IActionResult GetCommentById(int id)
         {
             var comment = _commentRepo.GetCommentById(id);

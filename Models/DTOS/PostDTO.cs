@@ -2,18 +2,23 @@
 {
     public class PostDTO
     {
-     public int PostId { get; set; }
 
-    public string Title { get; set; } = null!;
+        public int PostId { get; set; }
 
-    public string Type { get; set; } = null!;
+        public string Title { get; set; } = null!;
 
-    public bool Dead { get; set; }
+        public string Type { get; set; } = null!;
 
-    public bool Deleted { get; set; }
+        public bool Dead { get; set; }
 
-    public int AccountId { get; set; }
-    public List<CommentDTO> Comments { get; set; }
+        public bool Deleted { get; set; }
+
+        public int AccountId { get; set; }
+
+        public string Url { get; set; } = null!;
+
+        public int Upvotes { get; set; }
+        public List<CommentDTO> Comments { get; set; }
     public AccountInfoDTO Account { get; set; }
 
 

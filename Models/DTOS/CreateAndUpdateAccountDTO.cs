@@ -16,6 +16,6 @@
 
         public string Username { get; set; } = null!;
 
-        public bool IsBanned { get; set; }
+   
     }
 }

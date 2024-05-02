@@ -27,8 +27,8 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 int method = 4;
 
-                CommentDTO commentDTO = ManualMapper.CreateCommentAsCommentDTO(CreatedCommentDTO);
-                Comment comment = commentDTO.CommentAsDTO();
+                CommentDTO commentDTO = ManualMapper.MapCreateCommentToDTO(CreatedCommentDTO);
+                Comment comment = commentDTO.MapDTOToComment();
 
                 _dbContext.Comments.Add(comment);
                 _accRepo.modifyAccountStats(method, comment.AccountId);
@@ -82,7 +82,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             _dbContext.SaveChanges();
         }
 
-        public Comment UpdateComment(int id, Comment commentToUpdate)
+        public Comment UpdateComment(int id, CreateAndUpdateCommentDTO commentToUpdate)
         {
 
             var existingComment = GetCommentById(id);
@@ -96,10 +96,13 @@ namespace Custom_Hacker_News_Account_API.Repository
                existingComment.Author = commentToUpdate.Author;
                existingComment.Content = commentToUpdate.Content;
                existingComment.TimePosted = commentToUpdate.TimePosted;
-               existingComment.Upvotes = commentToUpdate.Upvotes;
+
+                CommentDTO commentDTO = ManualMapper.MapCreateCommentToDTO(commentToUpdate);
+
+                Comment comment = commentDTO.MapDTOToComment();
 
                 _dbContext.SaveChanges();
-                return commentToUpdate;
+                return comment;
            
                 
             }

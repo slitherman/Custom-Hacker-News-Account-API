@@ -16,7 +16,7 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public IEnumerable<AccountInfoDTO> GetAccounts()
         {
-         return _dbContext.AccountInfos.Include(a=> a.AccountStatistic).Select(a => a.AccountInfoAsDTO()).ToList();   
+         return _dbContext.AccountInfos.Include(a=> a.AccountStatistic).Select(a => a.MapAccountToDTO()).ToList();   
         }   
 
         public AccountInfoDTO GetAccountStats(int id)
@@ -29,7 +29,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 throw new ArgumentException($"Could not find the specified account with id {id}");
             }
-            var accountDTO = account.AccountInfoAsDTO();
+            var accountDTO = account.MapAccountToDTO();
 
             return accountDTO;
         }
@@ -66,7 +66,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 existingAccount.Username = updatedAccount.Username;
                 existingAccount.Password = updatedAccount.Password;
 
-                AccountInfo accountInfo =  updatedAccount.AccountInfoAsDTOReverse();
+                AccountInfo accountInfo = updatedAccount.MapDTOToAccount();
 
                 _dbContext.SaveChanges();
 
@@ -97,10 +97,10 @@ namespace Custom_Hacker_News_Account_API.Repository
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                AccountInfoDTO accountInfoDTO = ManualMapper.CreateAccountAsAccountInfoDTO(accountDTO);
+                AccountInfoDTO accountInfoDTO = ManualMapper.MapCreateAccountToDTO(accountDTO);
 
                 // Map AccountInfoDTO to AccountInfo entity
-                AccountInfo accountInfo = accountInfoDTO.AccountInfoAsDTOReverse();
+                AccountInfo accountInfo = accountInfoDTO.MapDTOToAccount();
 
                 _dbContext.AccountInfos.Add(accountInfo);
                 _dbContext.SaveChanges();

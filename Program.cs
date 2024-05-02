@@ -12,6 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AccountDbContext>();
 builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<CommentRepository>();
 
 
 var app = builder.Build();
