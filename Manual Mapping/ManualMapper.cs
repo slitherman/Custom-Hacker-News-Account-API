@@ -9,7 +9,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
         {
             return new AccountInfoDTO
             {
-
                 AccountId = account.AccountId,
                 Username = account.Username,
                 Firstname = account.Firstname,
@@ -18,42 +17,29 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Email = account.Email,
                 Password = account.Password,
                 IsBanned = account.IsBanned,
-                // This expression checks if the AccountInfo entity has an associated AccountStatistic.
-                // If it does, it maps the AccountStatistic entity to a DTO using the AccountStatAsDTO method.
-                // Otherwise, it assigns null to the AccountStatistic property of the DTO.
                 AccountStatistic = account.AccountStatistic != null ? MapAccountStatToDTO(account.AccountStatistic) : null,
-                Posts = account.Posts.Select(post => MapPostToDTO(post)).ToList() 
-
-
-
-
+                Posts = account.Posts.Select(post => MapPostToDTO(post)).ToList()
             };
-                
         }
-
 
         public static PostDTO MapCreatePostDTOToDTO(CreateAndUpdatePostDTO createandUpdatePostDTO)
         {
             return new PostDTO
             {
-
                 Title = createandUpdatePostDTO.Title,
                 Url = createandUpdatePostDTO.Url,
                 PostId = createandUpdatePostDTO.PostId,
-                AccountId = createandUpdatePostDTO.AccountId,
-
+                AccountId = createandUpdatePostDTO.AccountId
             };
-              }
+        }
 
         public static CommentDTO MapCreateCommentToDTO(CreateAndUpdateCommentDTO createCommentDTO)
         {
             return new CommentDTO
             {
-
                 Author = createCommentDTO.Author,
                 Content = createCommentDTO.Content,
-                TimePosted = createCommentDTO.TimePosted,
-           
+                TimePosted = createCommentDTO.TimePosted
             };
         }
 
@@ -67,9 +53,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Lastname = createAccountDTO.Lastname,
                 BirthDate = createAccountDTO.BirthDate,
                 Email = createAccountDTO.Email,
-                Password = createAccountDTO.Password,
-        
-               
+                Password = createAccountDTO.Password
             };
         }
 
@@ -77,7 +61,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
         {
             return new AccountInfo
             {
-
                 AccountId = account.AccountId,
                 Username = account.Username,
                 Firstname = account.Firstname,
@@ -89,89 +72,66 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             };
         }
 
-
-
         public static IEnumerable<AccountInfoDTO> MapAccountsToDTOs(this IEnumerable<AccountInfo> accounts)
         {
-
             var DTOS = new List<AccountInfoDTO>();
-
             foreach (var account in accounts)
             {
                 DTOS.Add(account.MapAccountToDTO());
             }
-
             return DTOS;
-            
         }
-
 
         public static PostDTO MapPostToDTO(this Post accountPost)
         {
             return new PostDTO
             {
-
                 PostId = accountPost.PostId,
                 Title = accountPost.Title,
-            
                 Dead = accountPost.Dead,
                 Deleted = accountPost.Deleted,
                 AccountId = accountPost.AccountId,
                 Account = accountPost.Account.MapAccountToDTO(),
-                Comments = accountPost.Comments.Select(x => MapCommentToDTO(x)).ToList(),
-
-
+                Comments = accountPost.Comments.Select(x => MapCommentToDTO(x)).ToList()
             };
         }
-
-           
-        
 
         public static Post MapDTOToPost(this PostDTO accountPostdto)
         {
             return new Post
             {
-
                 PostId = accountPostdto.PostId,
                 Title = accountPostdto.Title,
-               
                 Dead = accountPostdto.Dead,
                 Deleted = accountPostdto.Deleted,
-                AccountId = accountPostdto.AccountId,
-
+                AccountId = accountPostdto.AccountId
             };
-
         }
+
         public static AccountStatisticDTO MapAccountStatToDTO(this AccountStatistic accountStat)
         {
             return new AccountStatisticDTO
             {
-
-               AccountStatId = accountStat.AccountStatId,
-               CommentCount = accountStat.CommentCount,
-               SubmissionCount = accountStat.SubmissionCount,
-               Karma = accountStat.Karma,
-               UpvotesReceived = accountStat.UpvotesReceived,
-               LastTimeActive = accountStat.LastTimeActive,
-
+                AccountStatId = accountStat.AccountStatId,
+                CommentCount = accountStat.CommentCount,
+                SubmissionCount = accountStat.SubmissionCount,
+                Karma = accountStat.Karma,
+                UpvotesReceived = accountStat.UpvotesReceived,
+                LastTimeActive = accountStat.LastTimeActive
             };
-
         }
 
         public static AccountStatistic MapDTOToAccountStat(this AccountStatisticDTO accountStat)
         {
             return new AccountStatistic
             {
-
                 AccountStatId = accountStat.AccountStatId,
                 CommentCount = accountStat.CommentCount,
                 SubmissionCount = accountStat.SubmissionCount,
                 Karma = accountStat.Karma,
                 UpvotesReceived = accountStat.UpvotesReceived,
-                LastTimeActive = accountStat.LastTimeActive,
-
+                LastTimeActive = accountStat.LastTimeActive
             };
-
         }
 
         public static CommentDTO MapCommentToDTO(this Comment comment)
@@ -180,7 +140,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             {
                 throw new ArgumentNullException(nameof(comment));
             }
-
             var mappedComment = new CommentDTO
             {
                 CommentId = comment.CommentId,
@@ -191,8 +150,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 TimePosted = comment.TimePosted,
                 Upvotes = comment.Upvotes
             };
-
-            // Map nested Post and AccountInfo
             if (comment.Post != null)
             {
                 mappedComment.Post = comment.Post.MapPostToDTO();
@@ -201,7 +158,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             {
                 mappedComment.Account = comment.Account.MapAccountToDTO();
             }
-
             return mappedComment;
         }
 
@@ -211,7 +167,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             {
                 throw new ArgumentNullException(nameof(comment));
             }
-
             var mappedComment = new Comment
             {
                 CommentId = comment.CommentId,
@@ -222,8 +177,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 TimePosted = comment.TimePosted,
                 Upvotes = comment.Upvotes
             };
-
-            // Map nested PostDTO and AccountInfoDTO
             if (comment.Post != null)
             {
                 mappedComment.Post = comment.Post.MapDTOToPost();
@@ -232,23 +185,18 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             {
                 mappedComment.Account = comment.Account.MapDTOToAccount();
             }
-
             return mappedComment;
         }
 
         public static IEnumerable<Comment> MapCommentsToDTOs(this IEnumerable<CommentDTO> comments)
         {
             var DTOS = new List<Comment>();
-
             foreach (var comment in comments)
             {
                 DTOS.Add(comment.MapDTOToComment());
             }
-
             return DTOS;
         }
-
-
     }
 }
 
