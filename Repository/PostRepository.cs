@@ -107,14 +107,13 @@ namespace Custom_Hacker_News_Account_API.Repository
                 throw new Exception("Failed up update post", ex);
             }
 
-
         }
 
         public IEnumerable<PostDTO> GetAllPosts()
         {
             var dbOutput = _dbContext.Posts.Include(a => a.Account).ThenInclude(c => c.Comments).Select(p => p.MapPostToDTO()).ToList();
             Console.WriteLine($"{dbOutput}");
-            if(dbOutput == null) { 
+            if(dbOutput.Count == 0 || dbOutput == null) { 
             
                 throw new ArgumentNullException($"The entities {dbOutput} could not be retrieved from the database");
             }
