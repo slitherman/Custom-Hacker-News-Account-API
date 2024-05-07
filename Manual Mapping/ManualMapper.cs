@@ -18,7 +18,9 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Password = account.Password,
                 IsBanned = account.IsBanned,
                 AccountStatistic = account.AccountStatistic != null ? MapAccountStatToDTO(account.AccountStatistic) : null,
-                Posts = account.Posts.Select(post => MapPostToDTO(post)).ToList()
+                Posts = account.Posts.Select(post => MapPostToDTO(post)).ToList(),
+                Comments = account.Comments.Select(comment => MapCommentToDTO(comment)).ToList(),
+                
             };
         }
 
@@ -28,7 +30,6 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             {
                 Title = createandUpdatePostDTO.Title,
                 Url = createandUpdatePostDTO.Url,
-                PostId = createandUpdatePostDTO.PostId,
                 AccountId = createandUpdatePostDTO.AccountId
             };
         }

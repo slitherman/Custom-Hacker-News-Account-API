@@ -9,9 +9,9 @@
 
         public string Type { get; set; } = null!;
 
-        public bool Dead { get; set; }
+        public bool Dead { get; set; } = false; 
 
-        public bool Deleted { get; set; }
+        public bool Deleted { get; set; } = false;
 
         public int AccountId { get; set; }
 

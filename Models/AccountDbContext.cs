@@ -68,17 +68,29 @@ public partial class AccountDbContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnName("account_stat_id");
             entity.Property(e => e.CommentCount).HasColumnName("comment_count");
+            entity.Property(e => e.CommentId).HasColumnName("comment_Id");
             entity.Property(e => e.Karma).HasColumnName("karma");
             entity.Property(e => e.LastTimeActive)
                 .HasColumnType("datetime")
                 .HasColumnName("last_time_active");
+            entity.Property(e => e.PostId).HasColumnName("post_id");
             entity.Property(e => e.SubmissionCount).HasColumnName("submission_count");
             entity.Property(e => e.UpvotesReceived).HasColumnName("upvotes_received");
 
             entity.HasOne(d => d.AccountStat).WithOne(p => p.AccountStatistic)
                 .HasForeignKey<AccountStatistic>(d => d.AccountStatId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Account_Statistics_Account_Info1");
+                .HasConstraintName("FK_Account_Statistics_Account_Info");
+
+            entity.HasOne(d => d.Comment).WithMany(p => p.AccountStatistics)
+                .HasForeignKey(d => d.CommentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Account_Statistics_Comments");
+
+            entity.HasOne(d => d.Post).WithMany(p => p.AccountStatistics)
+                .HasForeignKey(d => d.PostId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Account_Statistics_Posts");
         });
 
         modelBuilder.Entity<Comment>(entity =>

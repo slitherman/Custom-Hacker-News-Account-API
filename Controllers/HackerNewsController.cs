@@ -95,22 +95,23 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-      
 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreatedAccount")]
         public IActionResult CreateAcc([FromBody] CreateAndUpdateAccountDTO accountDTO)
         {
             try
             {
                 _accountRepo.CreateAccount(accountDTO);
-                return Created("api/Account/GetAccountById", accountDTO);
+                return Created("api/Account/GetAccount", accountDTO);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating the account: {ex.Message}");
+                return BadRequest($"An error occurred while creating the account: {ex.Message}");
             }
         }
 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreatedPost")]
         public IActionResult CreatePost([FromBody] CreateAndUpdatePostDTO postDTO)
         {
@@ -121,7 +122,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating the account: {ex.Message}");
+                return BadRequest($"An error occurred while creating the post {postDTO}: {ex.Message}");
             }
         }
         [HttpPut("UpdatePost")]

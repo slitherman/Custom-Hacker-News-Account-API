@@ -23,6 +23,7 @@ namespace Custom_Hacker_News_Account_API.Models.DTOS
         public AccountStatisticDTO AccountStatistic { get; set; }
 
         public List<PostDTO> Posts { get; set; }
+        public List<CommentDTO> Comments { get; set; }
 
     }
 }

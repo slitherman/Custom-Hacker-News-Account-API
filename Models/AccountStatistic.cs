@@ -17,5 +17,13 @@ public partial class AccountStatistic
 
     public int? UpvotesReceived { get; set; }
 
+    public int PostId { get; set; }
+
+    public int CommentId { get; set; }
+
     public virtual AccountInfo AccountStat { get; set; } = null!;
+
+    public virtual Comment Comment { get; set; } = null!;
+
+    public virtual Post Post { get; set; } = null!;
 }

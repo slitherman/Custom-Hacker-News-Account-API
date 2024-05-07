@@ -23,15 +23,24 @@ namespace Custom_Hacker_News_Account_API.Repository
             try
             {
                 int method = 1;
+                if (string.IsNullOrEmpty(postToAdd.Url))
+                {
 
+                    postToAdd.Url = "default-url";
+                }
                 PostDTO postDTO = ManualMapper.MapCreatePostDTOToDTO(postToAdd);
 
 
                 Post post = postDTO.MapDTOToPost();
 
-                _dbContext.Posts.Add(post);
-                _accRepo.modifyAccountStats(method, post.AccountId);
+        
+
+               var dbRes = _dbContext.Posts.Add(post);
+                Console.WriteLine($"{dbRes}");
+                //_accRepo.modifyAccountStats(method, post.AccountId);
+                _dbContext.SaveChanges();
                 transaction.Commit();
+             
                 return post;
 
             }
@@ -103,7 +112,13 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public IEnumerable<PostDTO> GetAllPosts()
         {
-            return _dbContext.Posts.Select(p => p.MapPostToDTO()).ToList();        
+            var dbOutput = _dbContext.Posts.Include(a => a.Account).ThenInclude(c => c.Comments).Select(p => p.MapPostToDTO()).ToList();
+            Console.WriteLine($"{dbOutput}");
+            if(dbOutput == null) { 
+            
+                throw new ArgumentNullException($"The entities {dbOutput} could not be retrieved from the database");
+            }
+            return dbOutput;
         }
 
         public IEnumerable<PostDTO> GetAllCommentsInPost()
