@@ -38,6 +38,10 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
         }
 
+       
+
+
+
         [HttpGet("AccountStats/{id}")] 
         public ActionResult GetAccStats(int id) {
 
@@ -223,17 +227,19 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(comment);
         }
 
+
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreatedComment")]
-        public IActionResult CreateComment([FromBody] CreateAndUpdateCommentDTO commentDTO)
+        public IActionResult CreateComment([FromQuery] int id ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
         {
             try
             {
-                _commentRepo.CreateComment(commentDTO);
+                _commentRepo.CreateComment(id,commentDTO);
                 return Created("api/Comment/GetCommentById", commentDTO);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating the comment: {ex.Message}");
+                return BadRequest($"An error occurred while creating the comment: {ex.Message} {ex.InnerException}");
             }
         }
 

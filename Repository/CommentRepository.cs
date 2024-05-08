@@ -19,7 +19,7 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         }
 
-        public Comment CreateComment (CreateAndUpdateCommentDTO CreatedCommentDTO)
+        public Comment CreateComment(int id,CreateAndUpdateCommentDTO CreatedCommentDTO)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
@@ -27,18 +27,26 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 int method = 4;
 
+                var accid = _accRepo.GetAccountById(id);
+
+                if(accid.AccountId != CreatedCommentDTO.AccountId)
+                {
+                    throw new InvalidOperationException($"Could not create the comment due to the account id {id} not being present");
+                }
+
                 CommentDTO commentDTO = ManualMapper.MapCreateCommentToDTO(CreatedCommentDTO);
                 Comment comment = commentDTO.MapDTOToComment();
 
                 _dbContext.Comments.Add(comment);
-                _accRepo.modifyAccountStats(method, comment.AccountId);
+                _dbContext.SaveChanges();
+                //_accRepo.modifyAccountStats(method, comment.AccountId);
                 transaction.Commit();
                 return comment;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception("Failed to create comment, and update account", ex);
+                throw new Exception("Failed to create comment", ex);
             }
         }
 
