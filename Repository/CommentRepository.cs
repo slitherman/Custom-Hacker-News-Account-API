@@ -34,14 +34,15 @@ namespace Custom_Hacker_News_Account_API.Repository
                     throw new InvalidOperationException($"Could not create the comment due to the account id {id} not being present");
                 }
 
-                CommentDTO commentDTO = ManualMapper.MapCreateCommentToDTO(CreatedCommentDTO);
-                Comment comment = commentDTO.MapDTOToComment();
-
-                _dbContext.Comments.Add(comment);
+                var commentDTO = ManualMapper.MapCreateUpDateCommentDTOToComment(CreatedCommentDTO);
+      
+                Console.WriteLine($"Attempting to create comment with AccountId: {commentDTO.AccountId}");
+                _dbContext.Comments.Add(commentDTO);
                 _dbContext.SaveChanges();
                 //_accRepo.modifyAccountStats(method, comment.AccountId);
+              
                 transaction.Commit();
-                return comment;
+                return commentDTO;
             }
             catch (Exception ex)
             {

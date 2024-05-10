@@ -11,13 +11,13 @@ public partial class Comment
 
     public int PostId { get; set; }
 
-    public string Author { get; set; } = null!;
+    public string? Author { get; set; }
 
     public string Content { get; set; } = null!;
 
     public DateTime TimePosted { get; set; }
 
-    public int Upvotes { get; set; }
+    public int? Upvotes { get; set; }
 
     public virtual AccountInfo Account { get; set; } = null!;
 

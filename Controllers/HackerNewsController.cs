@@ -129,7 +129,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return BadRequest($"An error occurred while creating the post {postDTO}: {ex.Message}");
             }
         }
-        [HttpPut("UpdatePost")]
+        [HttpPut("UpdatePost/{id}")]
         public IActionResult UpdatePost(int id, [FromBody] CreateAndUpdatePostDTO postInfo)
         {
             try
@@ -148,7 +148,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("DeletePost")]
+        [HttpDelete("DeletePost/{id}")]
         public IActionResult DeletePost(int id)
         {
             try
@@ -229,8 +229,8 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedComment")]
-        public IActionResult CreateComment([FromQuery] int id ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
+        [HttpPost("CreatedComment/{id}")]
+        public IActionResult CreateComment(int id ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
         {
             try
             {

@@ -37,7 +37,7 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public AccountInfo GetAccountById(int id)
         {
-            AccountInfo? account_Id =_dbContext.AccountInfos.FirstOrDefault( x=> x.AccountId == id);
+            AccountInfo? account_Id =_dbContext.AccountInfos.FirstOrDefault( x => x.AccountId == id);
             if (account_Id == null) 
             {
                 throw new ArgumentException($"Could not get the specified account id{id}");

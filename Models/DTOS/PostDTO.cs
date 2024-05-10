@@ -5,6 +5,7 @@
 
         public int PostId { get; set; }
 
+        public string Username { get; set; }
         public string Title { get; set; } = null!;
 
         public bool Dead { get; set; } 
@@ -17,7 +18,9 @@
 
         public int? Upvotes { get; set; }
         public List<CommentDTO> Comments { get; set; }
-        public AccountInfoDTO Account { get; set; }
+        //public AccountInfoDTO Account { get; set; }
+
+        //public List<AccountStatisticDTO> AccountStatistics { get; set; }
 
 
 
