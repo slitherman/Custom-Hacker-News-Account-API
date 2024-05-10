@@ -45,7 +45,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             return account_Id;
         }
 
-        public AccountInfo UpdateAccount(AccountInfoDTO updatedAccount, int accountId) 
+        public AccountInfoDTO UpdateAccount(CreateAndUpdateAccountDTO updatedAccount, int accountId) 
         { 
         
         var existingAccount = _dbContext.AccountInfos.FirstOrDefault(x => x.AccountId == accountId);
@@ -66,11 +66,11 @@ namespace Custom_Hacker_News_Account_API.Repository
                 existingAccount.Username = updatedAccount.Username;
                 existingAccount.Password = updatedAccount.Password;
 
-                AccountInfo accountInfo = updatedAccount.MapDTOToAccount();
+                var accountUpdated = existingAccount.MapAccountToDTO();
 
                 _dbContext.SaveChanges();
 
-                return accountInfo;
+                return accountUpdated;
             }
             catch (Exception ex)
             {

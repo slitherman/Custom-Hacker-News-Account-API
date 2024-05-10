@@ -80,7 +80,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [HttpPut("UpdateAccount")] 
-        public IActionResult UpdateAcc([FromBody] AccountInfoDTO accountInfo, int id)
+        public IActionResult UpdateAcc([FromBody] CreateAndUpdateAccountDTO accountInfo, int id)
         {
             try
             {
@@ -139,8 +139,9 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 {
                     return NotFound($"Post with id {id} not found.");
                 }
-                _postRepo.UpdatePost(id, postInfo);
-                return Ok(postInfo);
+
+                var updatedPost = _postRepo.UpdatePost(id, postInfo);
+                return Ok(updatedPost); 
 
             }
             catch (ArgumentException ex)
@@ -229,12 +230,12 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedComment/{id}")]
-        public IActionResult CreateComment(int id ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
+        [HttpPost("CreatedComment/accId/{accountid}/postId/{postId}")]
+        public IActionResult CreateComment(int accountid, int postId ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
         {
             try
             {
-                _commentRepo.CreateComment(id,commentDTO);
+                _commentRepo.CreateComment(accountid,postId,commentDTO);
                 return Created("api/Comment/GetCommentById", commentDTO);
             }
             catch (Exception ex)

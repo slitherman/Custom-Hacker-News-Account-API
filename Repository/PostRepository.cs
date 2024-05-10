@@ -82,10 +82,12 @@ namespace Custom_Hacker_News_Account_API.Repository
 
 
         //}
+
         public PostDTO GetPostById(int id)
         {
        
-            var post = _dbContext.Posts.Include(a => a.Account).Include(c => c.Comments).FirstOrDefault(p => p.PostId == id);
+            var post = _dbContext.Posts.Include(a => a.Account).Include(c => c.Comments).
+                FirstOrDefault(p => p.PostId == id);
 
             if (post == null)
             {
@@ -94,94 +96,81 @@ namespace Custom_Hacker_News_Account_API.Repository
             var postDTO = post.MapPostToDTO();
             return postDTO;
         }
+
         public PostDTO DeletePost(int id)
         {
             var post = GetPostById(id);
             if (post == null)
             {
-                throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
+                throw new ArgumentNullException($"Selected post with the id {id} doesn't exist");
             }
-            
-            foreach(var commentDTO in post.Comments.ToList())
+
+            // Remove comments
+            var comments = _dbContext.Comments.Where(c => c.PostId == id).ToList();
+            foreach (var comment in comments)
             {
-                var comment = commentDTO.MapDTOToComment();
                 _dbContext.Comments.Remove(comment);
             }
 
-            var PostDTO = post.MapDTOToPost();
-            _dbContext.Posts.Remove(PostDTO);
+            // Remove the post
+            var postEntity = _dbContext.Posts.Find(id);
+            if (postEntity != null)
+            {
+                _dbContext.Posts.Remove(postEntity);
+            }
+
             _dbContext.SaveChanges();
             return post;
         }
 
-        public Post UpdatePost(int id, CreateAndUpdatePostDTO postToUpdate)
+
+
+
+
+
+        public PostDTO UpdatePost(int id, CreateAndUpdatePostDTO postToUpdate)
         {
-            var existingPostDTO = GetPostById(id);
-            if (existingPostDTO == null)
+            // Fetch the entity from the database
+            var existingPost = _dbContext.Posts.Find(id);
+            if (existingPost == null)
             {
                 throw new ArgumentNullException($"Could not find the specified post with the id {id}");
             }
+
             try
             {
-                existingPostDTO.Title = postToUpdate.Title;
-                existingPostDTO.Url = postToUpdate.Url;
-                var existingPost = existingPostDTO.MapDTOToPost();
+                // Update the entity with values from the DTO
+                existingPost.Title = postToUpdate.Title;
+                existingPost.Url = postToUpdate.Url;
+
+                // Mark the entity as modified
+                _dbContext.Posts.Update(existingPost);
+
+                // Save the changes to the database
                 _dbContext.SaveChanges();
-                return existingPost;
+
+                // Map the updated entity back to a DTO
+                var updatedPostDTO = existingPost.MapPostToDTO(); // Assuming you have a method to map Post to PostDTO
+
+                return updatedPostDTO;
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed up update post", ex);
+                throw new Exception("Failed to update post", ex);
             }
         }
 
-        //public Post UpdatePost(int id, CreateAndUpdatePostDTO postToUpdate)
-        //{
-        //    var existingPost = _dbContext.Posts.Find(id);
-        //    if (existingPost == null)
-        //    {
-        //        throw new ArgumentNullException($"Could not find the specified post with the id {id}");
-        //    }
-        //    try
-        //    {
-        //        existingPost.Title = postToUpdate.Title;
-        //        existingPost.Url = postToUpdate.Url;
-        //        _dbContext.SaveChanges();
-        //        return existingPost;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Failed to update post", ex);
-        //    }
-        //}
-
-        //public IEnumerable<PostDTO> GetAllPosts()
-
-        //{
-        //    //_dbContext.ChangeTracker.LazyLoadingEnabled = false;
-        //    var dbOutput = _dbContext.Posts
-        //   .Include(p => p.Account) // Ensure Account is loaded
-        //   .Select(p => p.MapPostToDTO()) // Map each Post entity to PostDTO
-        //   .ToList();
-        //    if (dbOutput.Count == 0 || dbOutput == null) { 
-
-        //        throw new InvalidOperationException($"The entities {dbOutput.ToString()} could not be retrieved from the database");
-        //    }
-        //    //dbOutput.MapAccountsToDTOs();
-        //    Console.WriteLine($"{dbOutput.ToString()}");
-        //    return dbOutput;
-        //}
-
-
         public IEnumerable<PostDTO> GetAllPosts()
-
         {
+            var posts = _dbContext.Posts
+                .Include(p => p.Account)
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.Account)
+                .ToList(); // Include Account in Comments
 
-            var posts = _dbContext.Posts.Include(a => a.Account).Include(c=> c.Comments).ToList();
-            if (posts.Count == 0 || posts == null)
+            if (posts == null || posts.Count == 0)
             {
-
-                throw new InvalidOperationException($"The entities {posts.ToString()} could not be retrieved from the database");
+                throw new InvalidOperationException("No posts found in the database.");
             }
 
             var postDtos = new List<PostDTO>();
@@ -194,20 +183,45 @@ namespace Custom_Hacker_News_Account_API.Repository
                 Console.WriteLine($"{post.ToString()}");
             }
 
-            var mappedPosts = new List<Post>();
-
-            // Map each PostDTO back to Post
-            //foreach (var postDto in postDtos)
-            //{
-            //    var post = postDto.MapDTOToPost();
-            //    mappedPosts.Add(post);
-            //    Console.WriteLine($"{post.ToString()}");
-            //}
             _dbContext.SaveChanges();
             return postDtos;
         }
 
-     
+
+        //public IEnumerable<PostDTO> GetAllPosts()
+
+        //{
+
+        //    var posts = _dbContext.Posts
+        //    .Include(p => p.Account)
+        //    .Include(p => p.Comments)
+        //    .ThenInclude(c => c.Account).ToList(); // Include Account in Comments
+
+        //    if (posts.Count == 0 || posts == null)
+        //    {
+
+        //        throw new InvalidOperationException($"The entities {posts.ToString()} could not be retrieved from the database");
+        //    }
+
+        //    var postDtos = new List<PostDTO>();
+
+        //    // Map each post to PostDTO
+        //    foreach (var post in posts)
+        //    {
+        //        var postDto = post.MapPostToDTO();
+        //        postDtos.Add(postDto);
+        //        Console.WriteLine($"{post.ToString()}");
+        //    }
+
+
+        //    var mappedPosts = new List<Post>();
+
+
+        //    _dbContext.SaveChanges();
+        //    return postDtos;
+        //}
+
+
         //public void UpvoteRecieved(int id)
         //{
         //    var post = GetPostById(id);

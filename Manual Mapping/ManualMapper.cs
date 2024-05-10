@@ -1,5 +1,6 @@
 ﻿using Custom_Hacker_News_Account_API.Models;
 using Custom_Hacker_News_Account_API.Models.DTOS;
+using Microsoft.Extensions.Hosting;
 using System.Runtime.CompilerServices;
 
 namespace Custom_Hacker_News_Account_API.Manual_Mapping
@@ -128,7 +129,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             var comments = accountPostdto.Comments != null ? accountPostdto.Comments.Select(c => c.MapDTOToComment()).ToList() : new List<Comment>();
             return new Post
             {
-                
+                PostId = accountPostdto.PostId,
                 Title = accountPostdto.Title,
                 Dead = accountPostdto.Dead,
                 Username = accountPostdto.Username,
@@ -206,6 +207,8 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             };
         }
 
+
+
         public static CommentDTO MapCommentToDTO(this Comment comment)
         {
             if (comment == null)
@@ -232,6 +235,8 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
             
             return mappedComment;
         }
+
+
 
         public static Comment MapDTOToComment(this CommentDTO comment)
         {
@@ -276,6 +281,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
         {
             return new Post
             {
+                PostId = posts.PostId,
                 Title = posts.Title,
                 AccountId = posts.AccountId,
                 Url = posts.Url,
