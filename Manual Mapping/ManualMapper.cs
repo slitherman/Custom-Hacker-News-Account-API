@@ -277,6 +277,17 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 TimePosted = comment.TimePosted,
             };
         }
+
+        public static Comment MapCreateCommentDTOToComment(CreateAndUpdateCommentDTO createCommentDTO)
+        {
+            return new Comment
+            {
+                Author = createCommentDTO.Author,
+                Content = createCommentDTO.Content,
+                TimePosted = createCommentDTO.TimePosted
+            };
+        }
+
         public static Post MapCreateUpdatePostDTOToPost(this CreateAndUpdatePostDTO posts)
         {
             return new Post

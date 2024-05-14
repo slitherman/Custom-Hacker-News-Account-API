@@ -54,7 +54,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             catch (Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception("Failed to create post and update account statistics.", ex);
+                throw new Exception($"Failed to create post due to the account with the id {postToAdd.AccountId}.", ex);
             }
         }
 

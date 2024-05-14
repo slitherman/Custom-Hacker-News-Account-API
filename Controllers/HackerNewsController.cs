@@ -230,12 +230,12 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedComment/accId/{accountid}/postId/{postId}")]
-        public IActionResult CreateComment(int accountid, int postId ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
+        [HttpPost("CreatedComment/accId/{accountiId}/postId/{postId}")]
+        public IActionResult CreateComment(int accountiId, int postId ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
         {
             try
             {
-                _commentRepo.CreateComment(accountid,postId,commentDTO);
+                _commentRepo.CreateComment(accountiId, postId,commentDTO);
                 return Created("api/Comment/GetCommentById", commentDTO);
             }
             catch (Exception ex)
