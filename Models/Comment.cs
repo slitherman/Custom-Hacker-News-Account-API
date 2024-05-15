@@ -21,7 +21,5 @@ public partial class Comment
 
     public virtual AccountInfo Account { get; set; } = null!;
 
-    public virtual ICollection<AccountStatistic> AccountStatistics { get; set; } = new List<AccountStatistic>();
-
     public virtual Post Post { get; set; } = null!;
 }

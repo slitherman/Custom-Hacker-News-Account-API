@@ -16,28 +16,28 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public IEnumerable<AccountInfoDTO> GetAccounts()
         {
-         return _dbContext.AccountInfos.Include(a=> a.AccountStatistic).Select(a => a.MapAccountToDTO()).ToList();   
+            return _dbContext.AccountInfos.ToList().MapAccountsToDTOs(); 
         }   
 
-        public AccountInfoDTO GetAccountStats(int id)
-        {
-            var account = _dbContext.AccountInfos
-                .Include(a => a.AccountStatistic)  
-                .FirstOrDefault(a => a.AccountId == id);
+        //public AccountInfoDTO GetAccountStats(int id)
+        //{
+        //    var account = _dbContext.AccountInfos
+        //        .FirstOrDefault(a => a.AccountId == id);
 
-            if (account == null)
-            {
-                throw new ArgumentException($"Could not find the specified account with id {id}");
-            }
-            var accountDTO = account.MapAccountToDTO();
+        //    if (account == null)
+        //    {
+        //        throw new ArgumentException($"Could not find the specified account with id {id}");
+        //    }
+        //    var accountDTO = account.MapAccountToDTO();
 
-            return accountDTO;
-        }
+        //    return accountDTO;
+        //}
 
 
         public AccountInfo GetAccountById(int id)
         {
             AccountInfo? account_Id =_dbContext.AccountInfos.FirstOrDefault( x => x.AccountId == id);
+            
             if (account_Id == null) 
             {
                 throw new ArgumentException($"Could not get the specified account id{id}");
@@ -117,68 +117,68 @@ namespace Custom_Hacker_News_Account_API.Repository
             }
         }
 
-        public void CalculateKarma(AccountInfo account)
-        {
-            account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived +
-                                              account.AccountStatistic.SubmissionCount + 
-                                              account.AccountStatistic.CommentCount) * 2;
-        }
-        public void modifyAccountStats(int method, int accId)
-        {
-            using var transaction = _dbContext.Database.BeginTransaction();
+        //public void CalculateKarma(AccountInfo account)
+        //{
+        //    account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived +
+        //                                      account.AccountStatistic.SubmissionCount + 
+        //                                      account.AccountStatistic.CommentCount) * 2;
+        //}
+        //public void modifyAccountStats(int method, int accId)
+        //{
+        //    using var transaction = _dbContext.Database.BeginTransaction();
 
-            try
-            {
-                _dbContext.SaveChanges();
-                var account = _dbContext.AccountInfos.Include(a =>
-                a.AccountStatistic).FirstOrDefault(
-                    a => a.AccountId == accId);
+        //    try
+        //    {
+        //        _dbContext.SaveChanges();
+        //        var account = _dbContext.AccountInfos.Include(a =>
+        //        a.AccountStatistic).FirstOrDefault(
+        //            a => a.AccountId == accId);
 
 
-                if (account != null)
-                {
-                    switch (method)
-                    {
-                        case 1: //Creating a post increases these parameters
-                            account.AccountStatistic.SubmissionCount++;
-                            account.AccountStatistic.UpvotesReceived++;
-                            CalculateKarma(account);
-                            break;
-                        case 2: //Removing a Post reduces the users SubmissionCount and Upvotes recieved by 1 - To prevent Upvoteboosting
-                            account.AccountStatistic.SubmissionCount--;
-                            account.AccountStatistic.UpvotesReceived--;
-                            CalculateKarma(account);
-                            break;
-                        case 3: //This case gets used when a user upvotes a post - Ups upvotesrecieves with 1, and calculates the new karma
-                            account.AccountStatistic.UpvotesReceived++;
-                            CalculateKarma(account);
-                            break;
-                        case 4: //Creating a comment increases these parameters
-                            account.AccountStatistic.CommentCount++;
-                            account.AccountStatistic.UpvotesReceived++;
-                            CalculateKarma(account);
-                            break;
-                        case 5: //Removing a Comment reduces the users CommentCount and Upvotes recieved by 1 - To prevent Upvoteboosting
-                            account.AccountStatistic.CommentCount--;
-                            account.AccountStatistic.UpvotesReceived--;
-                            CalculateKarma(account);
-                            break;
+        //        if (account != null)
+        //        {
+        //            switch (method)
+        //            {
+        //                case 1: //Creating a post increases these parameters
+        //                    account.AccountStatistic.SubmissionCount++;
+        //                    account.AccountStatistic.UpvotesReceived++;
+        //                    CalculateKarma(account);
+        //                    break;
+        //                case 2: //Removing a Post reduces the users SubmissionCount and Upvotes recieved by 1 - To prevent Upvoteboosting
+        //                    account.AccountStatistic.SubmissionCount--;
+        //                    account.AccountStatistic.UpvotesReceived--;
+        //                    CalculateKarma(account);
+        //                    break;
+        //                case 3: //This case gets used when a user upvotes a post - Ups upvotesrecieves with 1, and calculates the new karma
+        //                    account.AccountStatistic.UpvotesReceived++;
+        //                    CalculateKarma(account);
+        //                    break;
+        //                case 4: //Creating a comment increases these parameters
+        //                    account.AccountStatistic.CommentCount++;
+        //                    account.AccountStatistic.UpvotesReceived++;
+        //                    CalculateKarma(account);
+        //                    break;
+        //                case 5: //Removing a Comment reduces the users CommentCount and Upvotes recieved by 1 - To prevent Upvoteboosting
+        //                    account.AccountStatistic.CommentCount--;
+        //                    account.AccountStatistic.UpvotesReceived--;
+        //                    CalculateKarma(account);
+        //                    break;
 
-                        default:
-                            throw new ArgumentException("Invalid case: " + method);
+        //                default:
+        //                    throw new ArgumentException("Invalid case: " + method);
                             
-                    }
-                    _dbContext.SaveChanges();
-                }
+        //            }
+        //            _dbContext.SaveChanges();
+        //        }
 
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw new Exception("Failed update account statistics.", ex);
-            }
-        }
+        //        transaction.Commit();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        transaction.Rollback();
+        //        throw new Exception("Failed update account statistics.", ex);
+        //    }
+        //}
 
 
     }

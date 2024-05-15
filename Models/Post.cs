@@ -23,7 +23,5 @@ public partial class Post
 
     public virtual AccountInfo Account { get; set; } = null!;
 
-    public virtual ICollection<AccountStatistic> AccountStatistics { get; set; } = new List<AccountStatistic>();
-
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

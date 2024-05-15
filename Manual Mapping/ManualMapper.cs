@@ -26,9 +26,9 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Email = account.Email,
                 Password = account.Password,
                 IsBanned = account.IsBanned,
-                AccountStatistic = account.AccountStatistic != null ? MapAccountStatToDTO(account.AccountStatistic) : null,
-                Posts = account.Posts != null ? account.Posts.Select(post => MapPostToDTO(post)).ToList() : null,
-                Comments = account.Comments != null ? account.Comments.Select(comment => MapCommentToDTO(comment)).ToList() : null
+                //AccountStatistic = account.AccountStatistic != null ? MapAccountStatToDTO(account.AccountStatistic) : null,
+                //Posts = account.Posts != null ? account.Posts.Select(post => MapPostToDTO(post)).ToList() : null,
+                //Comments = account.Comments != null ? account.Comments.Select(comment => MapCommentToDTO(comment)).ToList() : null
             };
             return accountDto;
         }
@@ -115,7 +115,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 AccountId = accountPost.AccountId,
                 Url = accountPost.Url,
                 Comments = accountPost.Comments
-                       .Where(c => c != null && c.Account != null) // Filter out null comments and accounts
+                       .Where(c => c != null) // Filter out null comments and accounts
                        .Select(c => c.MapCommentToDTO()) // Map valid comments to DTOs
                        .ToList(),
                 //Account = accountPost.Account.MapAccountToDTO(),
@@ -184,31 +184,31 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
         //}
 
 
-        public static AccountStatisticDTO MapAccountStatToDTO(this AccountStatistic accountStat)
-        {
-            return new AccountStatisticDTO
-            {
-                AccountStatId = accountStat.AccountStatId,
-                CommentCount = accountStat.CommentCount,
-                SubmissionCount = accountStat.SubmissionCount,
-                Karma = accountStat.Karma,
-                UpvotesReceived = accountStat.UpvotesReceived,
-                LastTimeActive = accountStat.LastTimeActive
-            };
-        }
+        //public static AccountStatisticDTO MapAccountStatToDTO(this AccountStatistic accountStat)
+        //{
+        //    return new AccountStatisticDTO
+        //    {
+        //        AccountStatId = accountStat.AccountStatId,
+        //        CommentCount = accountStat.CommentCount,
+        //        SubmissionCount = accountStat.SubmissionCount,
+        //        Karma = accountStat.Karma,
+        //        UpvotesReceived = accountStat.UpvotesReceived,
+        //        LastTimeActive = accountStat.LastTimeActive
+        //    };
+        //}
 
-        public static AccountStatistic MapDTOToAccountStat(this AccountStatisticDTO accountStat)
-        {
-            return new AccountStatistic
-            {
-                AccountStatId = accountStat.AccountStatId,
-                CommentCount = accountStat.CommentCount,
-                SubmissionCount = accountStat.SubmissionCount,
-                Karma = accountStat.Karma,
-                UpvotesReceived = accountStat.UpvotesReceived,
-                LastTimeActive = accountStat.LastTimeActive
-            };
-        }
+        //public static AccountStatistic MapDTOToAccountStat(this AccountStatisticDTO accountStat)
+        //{
+        //    return new AccountStatistic
+        //    {
+        //        AccountStatId = accountStat.AccountStatId,
+        //        CommentCount = accountStat.CommentCount,
+        //        SubmissionCount = accountStat.SubmissionCount,
+        //        Karma = accountStat.Karma,
+        //        UpvotesReceived = accountStat.UpvotesReceived,
+        //        LastTimeActive = accountStat.LastTimeActive
+        //    };
+        //}
 
 
 
@@ -223,18 +223,12 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 CommentId = comment.CommentId,
                 AccountId = comment.AccountId,
                 PostId = comment.PostId,
-                Author = comment.Author != null ? comment.Account.Username : "Unknown_User!!!",
+                Author = comment.Author != null ? comment.Author : "Unknown_User!!!",
                 Content = comment.Content,
                 TimePosted = comment.TimePosted,
                 Upvotes = comment.Upvotes
             };
-            //if (comment.Post != null)
-            //{
-            //    mappedComment.Post = comment.Post.MapPostToDTO();
-            //}
-            //if (comment.Account != null)
-            //{
-            //    mappedComment.Account = comment.Account.MapAccountToDTO();
+         
             
             return mappedComment;
         }

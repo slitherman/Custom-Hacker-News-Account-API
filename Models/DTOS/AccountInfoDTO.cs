@@ -20,10 +20,10 @@ namespace Custom_Hacker_News_Account_API.Models.DTOS
 
         public bool IsBanned { get; set; }
 
-        public AccountStatisticDTO AccountStatistic { get; set; }
+        //public AccountStatisticDTO AccountStatistic { get; set; }
 
-        public List<PostDTO> Posts { get; set; }
-        public List<CommentDTO> Comments { get; set; }
+        //public List<PostDTO> Posts { get; set; }
+        //public List<CommentDTO> Comments { get; set; }
 
     }
 }

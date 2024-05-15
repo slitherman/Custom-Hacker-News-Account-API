@@ -75,7 +75,7 @@ namespace Custom_Hacker_News_Account_API.Repository
         }
 
 
-        public Comment DeleteCommentById (int id)
+        public Comment DeleteCommentById(int id)
         {
 
             var CommentToDelete = GetCommentById(id);
@@ -86,8 +86,8 @@ namespace Custom_Hacker_News_Account_API.Repository
             
             _dbContext.Comments.Remove(CommentToDelete);
             _dbContext.SaveChanges();
-            int method = 5;
-            _accRepo.modifyAccountStats(method, CommentToDelete.CommentId);
+        
+        
             return CommentToDelete;
         }
 
@@ -98,8 +98,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
             }
-            int method = 3;
-            _accRepo.modifyAccountStats(method, comment.AccountId);
+          
             _dbContext.SaveChanges();
         }
 

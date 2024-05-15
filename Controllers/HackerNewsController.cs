@@ -42,16 +42,16 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
 
-        [HttpGet("AccountStats/{id}")] 
-        public ActionResult GetAccStats(int id) {
+        //[HttpGet("AccountStats/{id}")] 
+        //public ActionResult GetAccStats(int id) {
 
-            var accountStats = _accountRepo.GetAccountStats(id);
-            if (accountStats == null)
-            {
-                return NotFound();
-            }
-            return Ok(accountStats);        
-        }
+        //    var accountStats = _accountRepo.GetAccountStats(id);
+        //    if (accountStats == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(accountStats);        
+        //}
 
         [HttpGet("Account/{id}")]
         public IActionResult GetAccById(int id)
