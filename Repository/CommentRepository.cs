@@ -21,47 +21,6 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         }
 
-        //public Comment CreateComment(int accountId, int idPost,CreateAndUpdateCommentDTO CreatedCommentDTO)
-        //{
-        //    using var transaction = _dbContext.Database.BeginTransaction();
-
-        //    try
-        //    {
-        //        var accid = _accRepo.GetAccountById(accountId);
-        //        var post = _postRepo.GetPostById(idPost);
-        //        //var commentDTO = ManualMapper.MapCreateUpDateCommentDTOToComment(CreatedCommentDTO
-
-          
-        //        var comment = new CreateAndUpdateCommentDTO
-        //        {
-        //            AccountId = accid.AccountId,
-        //            Author = accid.Username,
-        //            PostId = post.PostId,
-        //            Content = CreatedCommentDTO.Content,
-        //            TimePosted = CreatedCommentDTO.TimePosted,
-        //        };
-
-        //        if (accid.AccountId != comment.AccountId || post.PostId != comment.PostId)
-        //        {
-        //            throw new InvalidOperationException($"Could not create the comment due to the account id {accountId} or the post with the post id {idPost} not being present");
-        //        }
-        //        Console.WriteLine($"Attempting to create comment with AccountId: {comment.AccountId}");
-
-        //        var commentUpdated = comment.MapCreateUpDateCommentDTOToComment();
-
-        //        _dbContext.Comments.Add(commentUpdated);
-        //        _dbContext.SaveChanges();
-            
-              
-        //        transaction.Commit();
-        //        return commentUpdated;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        transaction.Rollback();
-        //        throw new Exception("Failed to create comment", ex);
-        //    }
-        //}
         public Comment CreateComment(int accountId, int idPost, CreateAndUpdateCommentDTO CreatedCommentDTO)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
@@ -72,7 +31,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 var post = _postRepo.GetPostById(idPost);
 
                 // Map CreateAndUpdateCommentDTO to Comment
-                var comment = ManualMapper.MapCreateCommentDTOToComment(CreatedCommentDTO);
+                var comment = ManualMapper.MapCreateUpDateCommentDTOToComment(CreatedCommentDTO);
 
                 // Populate additional properties
                 comment.AccountId = accid.AccountId;
@@ -90,6 +49,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 Console.WriteLine($"Attempting to create comment with AccountId: {comment.AccountId}");
 
                 // Add and save the comment
+                
                 _dbContext.Comments.Add(comment);
                 _dbContext.SaveChanges();
 
