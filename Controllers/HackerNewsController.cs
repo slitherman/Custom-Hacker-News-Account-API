@@ -65,7 +65,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(account);
         }
 
-        [HttpDelete("DeleteAccount")]
+        [HttpDelete("DeleteAccount{id}")]
         public IActionResult DeleteAcc(int id)
         {
           try
@@ -79,8 +79,8 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-        [HttpPut("UpdateAccount")] 
-        public IActionResult UpdateAcc([FromBody] CreateAndUpdateAccountDTO accountInfo, int id)
+        [HttpPut("UpdateAccount/{id}")] 
+        public IActionResult UpdateAcc(int id, [FromBody] CreateAndUpdateAccountDTO accountInfo)
         {
             try
             {
