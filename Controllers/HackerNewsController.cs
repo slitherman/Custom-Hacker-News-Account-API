@@ -162,8 +162,8 @@ namespace Custom_Hacker_News_Account_API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpGet("Post/{id}")]
-        public IActionResult GetPostById(int id)
+        [HttpGet("Post")]
+        public IActionResult GetPostById([FromQuery] int id)
         {
             var post = _postRepo.GetPostById(id);
 
