@@ -202,7 +202,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
-        [HttpDelete("DeleteComment")]
+        [HttpDelete("DeleteComment/{id}")]
         public IActionResult DeleteComment(int id)
         {
             try
