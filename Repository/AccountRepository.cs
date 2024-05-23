@@ -17,7 +17,7 @@ namespace Custom_Hacker_News_Account_API.Repository
         public IEnumerable<AccountInfoDTO> GetAccounts()
         {
             return _dbContext.AccountInfos.ToList().MapAccountsToDTOs(); 
-        }   
+        }
 
         //public AccountInfoDTO GetAccountStats(int id)
         //{
@@ -33,6 +33,15 @@ namespace Custom_Hacker_News_Account_API.Repository
         //    return accountDTO;
         //}
 
+        public AccountInfo GetAccountByName(string accountName)
+        {
+            AccountInfo? account = _dbContext.AccountInfos.FirstOrDefault(x => x.Username == accountName);
+            if (account == null)
+            {
+                throw new ArgumentNullException($"Account {accountName} could not be found");
+            }
+            return account;
+        }
 
         public AccountInfo GetAccountById(int id)
         {

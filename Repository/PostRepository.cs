@@ -105,13 +105,6 @@ namespace Custom_Hacker_News_Account_API.Repository
                 throw new ArgumentNullException($"Selected post with the id {id} doesn't exist");
             }
 
-            // Remove comments
-            var comments = _dbContext.Comments.Where(c => c.PostId == id).ToList();
-            foreach (var comment in comments)
-            {
-                _dbContext.Comments.Remove(comment);
-            }
-
             // Remove the post
             var postEntity = _dbContext.Posts.Find(id);
             if (postEntity != null)
@@ -182,8 +175,6 @@ namespace Custom_Hacker_News_Account_API.Repository
                 postDtos.Add(postDto);
                 Console.WriteLine($"{post.ToString()}");
             }
-
-            _dbContext.SaveChanges();
             return postDtos;
         }
 

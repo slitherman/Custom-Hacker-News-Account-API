@@ -12,7 +12,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
     [ApiController]
     public class HackerNewsController : ControllerBase
     {
-     
+
 
         public readonly AccountRepository _accountRepo;
         public readonly PostRepository _postRepo;
@@ -23,11 +23,11 @@ namespace Custom_Hacker_News_Account_API.Controllers
             _accountRepo = accountRepo;
             _postRepo = postRepo;
             _commentRepo = commentRepo;
-          
+
         }
 
-        [HttpGet("GetAllAccounts")]
-        public ActionResult GetAllAccounts()
+        [HttpGet("Accounts")]
+        public IActionResult GetAllAccounts()
         {
             var accounts = _accountRepo.GetAccounts();
             if (accounts == null)
@@ -38,8 +38,16 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
         }
 
-       
-
+        [HttpGet("ByName")]
+        public IActionResult GetAccountByName([FromQuery] string name) 
+        { 
+            var account = _accountRepo.GetAccountByName(name);
+            if (account == null)
+            {
+                return NotFound();
+            }
+            return Ok(account);
+        }
 
 
         //[HttpGet("AccountStats/{id}")] 
@@ -101,7 +109,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedAccount")]
+        [HttpPost("CreateAccount")]
         public IActionResult CreateAcc([FromBody] CreateAndUpdateAccountDTO accountDTO)
         {
             try
@@ -116,7 +124,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedPost")]
+        [HttpPost("CreatePost")]
         public IActionResult CreatePost([FromBody] CreateAndUpdatePostDTO postDTO)
         {
             try
@@ -173,7 +181,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
             return Ok(post);
         }
-        [HttpGet("GetAllPosts")]
+        [HttpGet("Posts")]
         public ActionResult GetAllPosts()
         {
             var posts = _postRepo.GetAllPosts();
@@ -184,7 +192,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(posts);
 
         }
-        [HttpPut("UpdatedComment/{id}")]
+        [HttpPut("UpdateComment/{id}")]
         public IActionResult UpdateComment(int id, [FromBody] CreateAndUpdateCommentDTO commentToUpdate)
         {
             try
@@ -230,12 +238,12 @@ namespace Custom_Hacker_News_Account_API.Controllers
 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreatedComment/accId/{accountiId}/postId/{postId}")]
-        public IActionResult CreateComment(int accountiId, int postId ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
+        [HttpPost("CreateComment/{accountId}/{postId}")]
+        public IActionResult CreateComment(int accountId, int postId ,[FromBody] CreateAndUpdateCommentDTO commentDTO)
         {
             try
             {
-                _commentRepo.CreateComment(accountiId, postId,commentDTO);
+                _commentRepo.CreateComment(accountId, postId,commentDTO);
                 return Created("api/Comment/GetCommentById", commentDTO);
             }
             catch (Exception ex)
