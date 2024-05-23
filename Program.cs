@@ -14,9 +14,9 @@ builder.Services.AddDbContext<AccountDbContext>(opt  =>
 {
     opt.EnableSensitiveDataLogging();
 });
-builder.Services.AddScoped<AccountRepository>();
-builder.Services.AddScoped<PostRepository>();
-builder.Services.AddScoped<CommentRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,

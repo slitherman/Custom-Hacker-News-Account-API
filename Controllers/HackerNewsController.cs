@@ -1,9 +1,5 @@
-﻿using Custom_Hacker_News_Account_API.Manual_Mapping;
-using Custom_Hacker_News_Account_API.Models;
-using Custom_Hacker_News_Account_API.Models.DTOS;
-using Custom_Hacker_News_Account_API.NewFolder;
+﻿using Custom_Hacker_News_Account_API.Models.DTOS;
 using Custom_Hacker_News_Account_API.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Custom_Hacker_News_Account_API.Controllers
@@ -14,11 +10,11 @@ namespace Custom_Hacker_News_Account_API.Controllers
     {
 
 
-        public readonly AccountRepository _accountRepo;
-        public readonly PostRepository _postRepo;
-        public readonly CommentRepository _commentRepo;
+        public readonly IAccountRepository _accountRepo;
+        public readonly IPostRepository _postRepo;
+        public readonly ICommentRepository _commentRepo;
 
-        public HackerNewsController(AccountRepository accountRepo, PostRepository postRepo, CommentRepository commentRepo)
+        public HackerNewsController(IAccountRepository accountRepo, IPostRepository postRepo, ICommentRepository commentRepo)
         {
             _accountRepo = accountRepo;
             _postRepo = postRepo;

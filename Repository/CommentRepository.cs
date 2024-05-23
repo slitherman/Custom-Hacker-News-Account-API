@@ -4,16 +4,16 @@ using Custom_Hacker_News_Account_API.Models.DTOS;
 
 namespace Custom_Hacker_News_Account_API.Repository
 {
-    public class CommentRepository
+    public class CommentRepository : ICommentRepository
     {
 
         public readonly AccountDbContext _dbContext;
 
-        public AccountRepository _accRepo;
-        public PostRepository _postRepo;
-     
+        public IAccountRepository _accRepo;
+        public IPostRepository _postRepo;
 
-        public CommentRepository(AccountDbContext context ,AccountRepository _repo, PostRepository postRepository)
+
+        public CommentRepository(AccountDbContext context, IAccountRepository _repo, IPostRepository postRepository)
         {
             _dbContext = context;
             _accRepo = _repo;
@@ -39,7 +39,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 comment.PostId = post.PostId;
                 comment.Content = CreatedCommentDTO.Content;
                 comment.TimePosted = CreatedCommentDTO.TimePosted;
-                
+
                 // Additional checks if needed
                 if (accid.AccountId != comment.AccountId || post.PostId != comment.PostId)
                 {
@@ -49,7 +49,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 Console.WriteLine($"Attempting to create comment with AccountId: {comment.AccountId}");
 
                 // Add and save the comment
-                
+
                 _dbContext.Comments.Add(comment);
                 _dbContext.SaveChanges();
 
@@ -64,9 +64,9 @@ namespace Custom_Hacker_News_Account_API.Repository
         }
 
 
-        public Comment GetCommentById (int id)
+        public Comment GetCommentById(int id)
         {
-            var foundComment = _dbContext.Comments.FirstOrDefault(x  => x.CommentId == id);
+            var foundComment = _dbContext.Comments.FirstOrDefault(x => x.CommentId == id);
             if (foundComment != null)
             {
                 return foundComment;
@@ -83,22 +83,22 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 throw new ArgumentNullException($"Could not find the specified comment with the id {id}");
             }
-            
+
             _dbContext.Comments.Remove(CommentToDelete);
             _dbContext.SaveChanges();
-        
-        
+
+
             return CommentToDelete;
         }
 
         public void UpvoteRecieved(int id)
         {
             var comment = GetCommentById(id);
-            if(comment == null)
+            if (comment == null)
             {
                 throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
             }
-          
+
             _dbContext.SaveChanges();
         }
 
@@ -113,16 +113,16 @@ namespace Custom_Hacker_News_Account_API.Repository
 
             try
             {
-               existingComment.Author = commentToUpdate.Author;
-               existingComment.Content = commentToUpdate.Content;
-               existingComment.TimePosted = commentToUpdate.TimePosted;
+                existingComment.Author = commentToUpdate.Author;
+                existingComment.Content = commentToUpdate.Content;
+                existingComment.TimePosted = commentToUpdate.TimePosted;
 
-               
+
 
                 _dbContext.SaveChanges();
                 return existingComment;
-           
-                
+
+
             }
             catch (Exception e)
             {

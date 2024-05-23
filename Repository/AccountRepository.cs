@@ -1,22 +1,20 @@
 ﻿using Custom_Hacker_News_Account_API.Manual_Mapping;
-using Custom_Hacker_News_Account_API.Models;
 using Custom_Hacker_News_Account_API.Models.DTOS;
-using Custom_Hacker_News_Account_API.NewFolder;
-using Microsoft.EntityFrameworkCore;
 
 namespace Custom_Hacker_News_Account_API.Repository
 {
-    public class AccountRepository: IAccountRepo
+    public class AccountRepository : IAccountRepository
     {
         public readonly AccountDbContext _dbContext;
 
-        public AccountRepository(AccountDbContext DbContext) { 
+        public AccountRepository(AccountDbContext DbContext)
+        {
             _dbContext = DbContext;
         }
 
         public IEnumerable<AccountInfoDTO> GetAccounts()
         {
-            return _dbContext.AccountInfos.ToList().MapAccountsToDTOs(); 
+            return _dbContext.AccountInfos.ToList().MapAccountsToDTOs();
         }
 
         //public AccountInfoDTO GetAccountStats(int id)
@@ -45,23 +43,23 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public AccountInfo GetAccountById(int id)
         {
-            AccountInfo? account_Id =_dbContext.AccountInfos.FirstOrDefault( x => x.AccountId == id);
-            
-            if (account_Id == null) 
+            AccountInfo? account_Id = _dbContext.AccountInfos.FirstOrDefault(x => x.AccountId == id);
+
+            if (account_Id == null)
             {
                 throw new ArgumentException($"Could not get the specified account id{id}");
             }
             return account_Id;
         }
 
-        public AccountInfoDTO UpdateAccount(CreateAndUpdateAccountDTO updatedAccount, int accountId) 
-        { 
-        
-        var existingAccount = _dbContext.AccountInfos.FirstOrDefault(x => x.AccountId == accountId);
+        public AccountInfoDTO UpdateAccount(CreateAndUpdateAccountDTO updatedAccount, int accountId)
+        {
+
+            var existingAccount = _dbContext.AccountInfos.FirstOrDefault(x => x.AccountId == accountId);
 
             if (existingAccount == null)
             {
-           
+
                 throw new Exception($"Account with ID {updatedAccount.AccountId} not found.");
             }
 
@@ -99,7 +97,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             _dbContext.SaveChanges();
             return account;
         }
-       
+
 
         public AccountInfo CreateAccount(CreateAndUpdateAccountDTO accountDTO)
         {
@@ -117,10 +115,10 @@ namespace Custom_Hacker_News_Account_API.Repository
                 return accountInfo;
 
             }
-            
+
             catch (Exception ex)
             {
-              
+
                 transaction.Rollback();
                 throw new Exception("Failed to add account to the database.", ex);
             }
@@ -175,7 +173,7 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         //                default:
         //                    throw new ArgumentException("Invalid case: " + method);
-                            
+
         //            }
         //            _dbContext.SaveChanges();
         //        }

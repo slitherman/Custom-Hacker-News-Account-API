@@ -7,12 +7,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace Custom_Hacker_News_Account_API.Repository
 {
-    public class PostRepository
+    public class PostRepository : IPostRepository
     {
         public readonly AccountDbContext _dbContext;
-        public AccountRepository _accRepo { get; set; }
+        public IAccountRepository _accRepo { get; set; }
 
-        public PostRepository(AccountDbContext DbContext, AccountRepository repo )
+        public PostRepository(AccountDbContext DbContext, IAccountRepository repo)
         {
             _dbContext = DbContext;
             _accRepo = repo;
@@ -85,7 +85,7 @@ namespace Custom_Hacker_News_Account_API.Repository
 
         public PostDTO GetPostById(int id)
         {
-       
+
             var post = _dbContext.Posts.Include(a => a.Account).Include(c => c.Comments).
                 FirstOrDefault(p => p.PostId == id);
 
