@@ -11,5 +11,6 @@ namespace Custom_Hacker_News_Account_API.Repository
         IEnumerable<PostDTO> GetAllPosts();
         PostDTO GetPostById(int id);
         PostDTO UpdatePost(int id, CreateAndUpdatePostDTO postToUpdate);
+        public IEnumerable<PostDTO> GetMostPopularPosts(int MinComments);
     }
 }

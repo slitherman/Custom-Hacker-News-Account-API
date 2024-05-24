@@ -82,6 +82,23 @@ namespace Custom_Hacker_News_Account_API.Repository
 
 
         //}
+        public IEnumerable<PostDTO> GetMostPopularPosts(int MinComments)
+        {
+            var posts = _dbContext.Posts.Include(a => a.Account).Include(c => c.Comments).Where(c => c.Comments.Count > MinComments).OrderBy(c=>c.Comments.Count).ToList();
+            if(posts == null)
+            {
+                throw new ArgumentNullException("Could not fetch posts");
+            }
+            var postDtos = new List<PostDTO>();
+            foreach (var post in posts)
+            {
+                var postDto = post.MapPostToDTO();
+                postDtos.Add(postDto);
+
+            }
+            return postDtos;
+
+        }
 
         public PostDTO GetPostById(int id)
         {

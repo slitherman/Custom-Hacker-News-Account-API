@@ -178,7 +178,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(post);
         }
         [HttpGet("Posts")]
-        public ActionResult GetAllPosts()
+        public IActionResult GetAllPosts()
         {
             var posts = _postRepo.GetAllPosts();
             if (posts == null)
@@ -187,6 +187,16 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
             return Ok(posts);
 
+        }
+        [HttpGet("PopularPosts")]
+        public IActionResult PopularPosts([FromQuery] int MinComments)
+        {
+            var posts = _postRepo.GetMostPopularPosts(MinComments);
+            if(posts == null)
+            {
+                return NotFound();
+            }
+            return Ok(posts);
         }
         [HttpPut("UpdateComment/{id}")]
         public IActionResult UpdateComment(int id, [FromBody] CreateAndUpdateCommentDTO commentToUpdate)
