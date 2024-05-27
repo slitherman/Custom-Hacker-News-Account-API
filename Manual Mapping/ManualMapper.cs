@@ -114,6 +114,7 @@ namespace Custom_Hacker_News_Account_API.Manual_Mapping
                 Deleted = accountPost.Deleted,
                 AccountId = accountPost.AccountId,
                 Url = accountPost.Url,
+                Upvotes = accountPost.Upvotes,
                 Comments = accountPost.Comments
                        .Where(c => c != null) // Filter out null comments and accounts
                        .Select(c => c.MapCommentToDTO()) // Map valid comments to DTOs

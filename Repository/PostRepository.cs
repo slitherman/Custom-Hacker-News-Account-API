@@ -230,16 +230,32 @@ namespace Custom_Hacker_News_Account_API.Repository
         //}
 
 
-        //public void UpvoteRecieved(int id)
-        //{
-        //    var post = GetPostById(id);
-        //    if (post == null)
-        //    {
-        //        throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
-        //    }
-        //    int method = 3;
-        //    _accRepo.modifyAccountStats(method, post.AccountId);
-        //    _dbContext.SaveChanges();
-        //}
+    public Post UpvoteRecieved(int id)
+    {
+        var post = _dbContext.Posts.FirstOrDefault(p => p.PostId == id);
+        if (post == null)
+        {
+            throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
+        }
+        if (post.Upvotes == null)
+        {
+            post.Upvotes = 0;
+        }
+        post.Upvotes++;
+        _dbContext.SaveChanges();
+        return post;
+    }
+    public Post UpvoteRemoved(int id)
+    {
+        var post = _dbContext.Posts.FirstOrDefault(p => p.PostId == id);
+        if (post == null)
+        {
+            throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
+        }
+
+        post.Upvotes--;
+        _dbContext.SaveChanges();
+        return post;
+    }
     }
 }

@@ -241,7 +241,84 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
             return Ok(comment);
         }
+     // Upvote a comment
+     [HttpGet("AddUpvoteFromComment/{id}")]
+     public IActionResult UpvoteComment(int id)
+     {
+         try
+         {
+             _commentRepo.UpvoteRecieved(id);
+             return Ok($"Upvote added to comment ID {id}");
+         }
+         catch (ArgumentNullException ex)
+         {
+             return NotFound(ex.Message);
+         }
+         catch (Exception ex)
+         {
+             return StatusCode(500, $"Internal server error: {ex.Message}");
+         }
+     }
+     // Upvote a post
+     [HttpGet("AddUpvoteFromPost/{id}")]
+     public IActionResult UpvotePost(int id)
+     {
+         try
+         {
+             var post = _postRepo.UpvoteRecieved(id);
+             if(post == null)
+             {
+                 return NotFound($"Cannot find post with the id:{id}");
+             }
+             return Ok(post);
+         }
+         catch (ArgumentNullException ex)
+         {
+             return NotFound(ex.Message);
+         }
+         catch (Exception ex)
+         {
+             return StatusCode(500, $"Internal server error: {ex.Message}");
+         }
+     }
 
+     // Remove upvote from a comment
+     [HttpGet("RemoveUpvoteFromComment/{id}")]
+     public IActionResult RemoveUpvoteFromComment(int id)
+     {
+         try
+         {
+             _commentRepo.UpvoteRemoved(id);
+             return Ok($"Upvote removed from comment ID {id}");
+         }
+         catch (ArgumentNullException ex)
+         {
+             return NotFound(ex.Message);
+         }
+         catch (Exception ex)
+         {
+             return StatusCode(500, $"Internal server error: {ex.Message}");
+         }
+     }
+
+     // Remove upvote from a post
+     [HttpGet("RemoveUpvoteFromPost/{id}")]
+     public IActionResult RemoveUpvoteFromPost(int id)
+     {
+         try
+         {
+             _postRepo.UpvoteRemoved(id);
+             return Ok($"Upvote removed from post ID {id}");
+         }
+         catch (ArgumentNullException ex)
+         {
+             return NotFound(ex.Message);
+         }
+         catch (Exception ex)
+         {
+             return StatusCode(500, $"Internal server error: {ex.Message}");
+         }
+     }
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreateComment/{accountId}/{postId}")]

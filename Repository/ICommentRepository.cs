@@ -8,6 +8,7 @@ namespace Custom_Hacker_News_Account_API.Repository
         Comment DeleteCommentById(int id);
         Comment GetCommentById(int id);
         Comment UpdateComment(int id, CreateAndUpdateCommentDTO commentToUpdate);
-        void UpvoteRecieved(int id);
+        Comment UpvoteRecieved(int id);
+        Comment UpvoteRemoved(int id);
     }
 }
