@@ -33,6 +33,10 @@ public partial class AccountDbContext : DbContext
 
             entity.ToTable("Account_Info");
 
+            entity.HasIndex(e => e.Email, "UC_Email").IsUnique();
+
+            entity.HasIndex(e => e.Username, "UC_Username").IsUnique();
+
             entity.Property(e => e.AccountId).HasColumnName("account_id");
             entity.Property(e => e.BirthDate).HasColumnName("birth_date");
             entity.Property(e => e.Email)

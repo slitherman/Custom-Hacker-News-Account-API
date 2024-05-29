@@ -10,5 +10,6 @@ namespace Custom_Hacker_News_Account_API.Repository
         AccountInfo GetAccountByName(string accountName);
         IEnumerable<AccountInfoDTO> GetAccounts();
         AccountInfoDTO UpdateAccount(CreateAndUpdateAccountDTO updatedAccount, int accountId);
+        AccountInfo ResetPassWord(string email, string password);
     }
 }

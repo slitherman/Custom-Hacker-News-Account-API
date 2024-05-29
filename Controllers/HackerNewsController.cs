@@ -45,18 +45,6 @@ namespace Custom_Hacker_News_Account_API.Controllers
             return Ok(account);
         }
 
-
-        //[HttpGet("AccountStats/{id}")] 
-        //public ActionResult GetAccStats(int id) {
-
-        //    var accountStats = _accountRepo.GetAccountStats(id);
-        //    if (accountStats == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(accountStats);        
-        //}
-
         [HttpGet("Account/{id}")]
         public IActionResult GetAccById(int id)
         {
@@ -103,6 +91,17 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
         }
 
+        [HttpPut("ResetPassword")] 
+        public IActionResult ResetPassword(string email, string password)
+        {
+            var account = _accountRepo.ResetPassWord(email, password);
+            if(account == null)
+            {
+                return NotFound();
+            }
+            return Ok(account);
+
+        } 
 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreateAccount")]

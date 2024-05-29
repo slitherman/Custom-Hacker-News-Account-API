@@ -17,19 +17,13 @@ namespace Custom_Hacker_News_Account_API.Repository
             return _dbContext.AccountInfos.ToList().MapAccountsToDTOs();
         }
 
-        //public AccountInfoDTO GetAccountStats(int id)
-        //{
-        //    var account = _dbContext.AccountInfos
-        //        .FirstOrDefault(a => a.AccountId == id);
+        public string HashPassword(string password) {
 
-        //    if (account == null)
-        //    {
-        //        throw new ArgumentException($"Could not find the specified account with id {id}");
-        //    }
-        //    var accountDTO = account.MapAccountToDTO();
+            //the workfactor 13 results in 8,192 iterations 
+            return BCrypt.Net.BCrypt.EnhancedHashPassword(password,13);
+        }
 
-        //    return accountDTO;
-        //}
+  
 
         public AccountInfo GetAccountByName(string accountName)
         {
@@ -52,6 +46,19 @@ namespace Custom_Hacker_News_Account_API.Repository
             return account_Id;
         }
 
+        public AccountInfo ResetPassWord(string email, string password) 
+        { 
+            var account = _dbContext.AccountInfos.FirstOrDefault(x=>x.Email == email);
+            if (account == null)
+            {
+                throw new ArgumentException($"Could not find an account with the email {email}");
+            }
+            account.Password = HashPassword(password);
+            _dbContext.SaveChanges();
+            return account;
+           
+
+        }
         public AccountInfoDTO UpdateAccount(CreateAndUpdateAccountDTO updatedAccount, int accountId)
         {
 
@@ -71,7 +78,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 existingAccount.Email = updatedAccount.Email;
                 existingAccount.BirthDate = updatedAccount.BirthDate;
                 existingAccount.Username = updatedAccount.Username;
-                existingAccount.Password = updatedAccount.Password;
+                existingAccount.Password = HashPassword(updatedAccount.Password);
 
                 var accountUpdated = existingAccount.MapAccountToDTO();
 
@@ -109,6 +116,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 // Map AccountInfoDTO to AccountInfo entity
                 AccountInfo accountInfo = accountInfoDTO.MapDTOToAccount();
 
+                accountInfo.Password = HashPassword(accountInfoDTO.Password);
                 _dbContext.AccountInfos.Add(accountInfo);
                 _dbContext.SaveChanges();
                 transaction.Commit();
@@ -123,70 +131,6 @@ namespace Custom_Hacker_News_Account_API.Repository
                 throw new Exception("Failed to add account to the database.", ex);
             }
         }
-
-        //public void CalculateKarma(AccountInfo account)
-        //{
-        //    account.AccountStatistic.Karma = (account.AccountStatistic.UpvotesReceived +
-        //                                      account.AccountStatistic.SubmissionCount + 
-        //                                      account.AccountStatistic.CommentCount) * 2;
-        //}
-        //public void modifyAccountStats(int method, int accId)
-        //{
-        //    using var transaction = _dbContext.Database.BeginTransaction();
-
-        //    try
-        //    {
-        //        _dbContext.SaveChanges();
-        //        var account = _dbContext.AccountInfos.Include(a =>
-        //        a.AccountStatistic).FirstOrDefault(
-        //            a => a.AccountId == accId);
-
-
-        //        if (account != null)
-        //        {
-        //            switch (method)
-        //            {
-        //                case 1: //Creating a post increases these parameters
-        //                    account.AccountStatistic.SubmissionCount++;
-        //                    account.AccountStatistic.UpvotesReceived++;
-        //                    CalculateKarma(account);
-        //                    break;
-        //                case 2: //Removing a Post reduces the users SubmissionCount and Upvotes recieved by 1 - To prevent Upvoteboosting
-        //                    account.AccountStatistic.SubmissionCount--;
-        //                    account.AccountStatistic.UpvotesReceived--;
-        //                    CalculateKarma(account);
-        //                    break;
-        //                case 3: //This case gets used when a user upvotes a post - Ups upvotesrecieves with 1, and calculates the new karma
-        //                    account.AccountStatistic.UpvotesReceived++;
-        //                    CalculateKarma(account);
-        //                    break;
-        //                case 4: //Creating a comment increases these parameters
-        //                    account.AccountStatistic.CommentCount++;
-        //                    account.AccountStatistic.UpvotesReceived++;
-        //                    CalculateKarma(account);
-        //                    break;
-        //                case 5: //Removing a Comment reduces the users CommentCount and Upvotes recieved by 1 - To prevent Upvoteboosting
-        //                    account.AccountStatistic.CommentCount--;
-        //                    account.AccountStatistic.UpvotesReceived--;
-        //                    CalculateKarma(account);
-        //                    break;
-
-        //                default:
-        //                    throw new ArgumentException("Invalid case: " + method);
-
-        //            }
-        //            _dbContext.SaveChanges();
-        //        }
-
-        //        transaction.Commit();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        transaction.Rollback();
-        //        throw new Exception("Failed update account statistics.", ex);
-        //    }
-        //}
-
 
     }
 }
