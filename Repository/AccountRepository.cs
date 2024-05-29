@@ -53,7 +53,7 @@ namespace Custom_Hacker_News_Account_API.Repository
             {
                 throw new ArgumentException($"Could not find an account with the email {email}");
             }
-            account.Password = HashPassword(password);
+            account.Password = password;
             _dbContext.SaveChanges();
             return account;
            
@@ -78,7 +78,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 existingAccount.Email = updatedAccount.Email;
                 existingAccount.BirthDate = updatedAccount.BirthDate;
                 existingAccount.Username = updatedAccount.Username;
-                existingAccount.Password = HashPassword(updatedAccount.Password);
+                existingAccount.Password = updatedAccount.Password;
 
                 var accountUpdated = existingAccount.MapAccountToDTO();
 
@@ -116,7 +116,7 @@ namespace Custom_Hacker_News_Account_API.Repository
                 // Map AccountInfoDTO to AccountInfo entity
                 AccountInfo accountInfo = accountInfoDTO.MapDTOToAccount();
 
-                accountInfo.Password = HashPassword(accountInfoDTO.Password);
+               
                 _dbContext.AccountInfos.Add(accountInfo);
                 _dbContext.SaveChanges();
                 transaction.Commit();

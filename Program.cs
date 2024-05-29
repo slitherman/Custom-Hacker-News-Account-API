@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                          policy.WithOrigins("https://prometheus-nu.vercel.app/", "http://localhost:3001/").AllowAnyMethod().AllowAnyHeader();
                       });
 });
 
