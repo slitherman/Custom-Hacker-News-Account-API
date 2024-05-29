@@ -198,6 +198,7 @@ namespace Custom_Hacker_News_Account_API.Controllers
             }
             return Ok(posts);
         }
+
         [HttpPut("UpdateComment/{id}")]
         public IActionResult UpdateComment(int id, [FromBody] CreateAndUpdateCommentDTO commentToUpdate)
         {
