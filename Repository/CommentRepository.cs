@@ -91,17 +91,32 @@ namespace Custom_Hacker_News_Account_API.Repository
             return CommentToDelete;
         }
 
-        public void UpvoteRecieved(int id)
+        public Comment UpvoteRecieved(int id)
         {
             var comment = GetCommentById(id);
             if (comment == null)
             {
                 throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
             }
-
+            if (comment.Upvotes == null) 
+            {
+                comment.Upvotes = 0;
+            }
+            comment.Upvotes++;
             _dbContext.SaveChanges();
+            return comment;
         }
-
+        public Comment UpvoteRemoved(int id)
+        {
+            var comment = GetCommentById(id);
+            if (comment == null)
+            {
+                throw new ArgumentNullException($"Selected post with the id {id} doesnt exist");
+            }
+            comment.Upvotes--;
+            _dbContext.SaveChanges();
+            return comment;
+        }
         public Comment UpdateComment(int id, CreateAndUpdateCommentDTO commentToUpdate)
         {
 
