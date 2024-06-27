@@ -1,6 +1,7 @@
 ﻿using Custom_Hacker_News_Account_API.Manual_Mapping;
 using Custom_Hacker_News_Account_API.Models.Context;
 using Custom_Hacker_News_Account_API.Models.DTOS;
+using Custom_Hacker_News_Account_API.Models.Login;
 
 namespace Custom_Hacker_News_Account_API.Repository
 {

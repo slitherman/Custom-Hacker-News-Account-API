@@ -1,4 +1,5 @@
 ﻿using Custom_Hacker_News_Account_API.Models.DTOS;
+using Custom_Hacker_News_Account_API.Models.Login;
 
 namespace Custom_Hacker_News_Account_API.Repository
 {

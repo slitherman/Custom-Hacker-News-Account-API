@@ -1,8 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace Custom_Hacker_News_Account_API.Models.DTOS
+namespace Custom_Hacker_News_Account_API.Models.Login
 {
-    public class AccountInfoDTO
+    public class ApplicationUser: IdentityUser
     {
         public int AccountId { get; set; }
 
@@ -12,14 +12,10 @@ namespace Custom_Hacker_News_Account_API.Models.DTOS
 
         public string Email { get; set; } = null!;
 
-        public string Password { get; set; } = null!;
-
         public DateTime BirthDate { get; set; }
 
         public string Username { get; set; } = null!;
 
         public bool IsBanned { get; set; }
-
     }
 }
-

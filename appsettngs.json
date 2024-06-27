@@ -5,5 +5,11 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
-  "AllowedHosts": "*"
+  "AllowedHosts": "*",
+  "Jwt": {
+    "Issuer": "https://localhost:7124/",
+    "Audience": "https://localhost:7124/",
+    "Key": "S1u*p7e_r+S2e/c4r6e7t*0K/e7y"
+  }
 }
+

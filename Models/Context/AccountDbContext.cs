@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Custom_Hacker_News_Account_API.Models.Login;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Custom_Hacker_News_Account_API.Models.Context;
 
-public partial class AccountDbContext : DbContext
+public partial class AccountDbContext : IdentityDbContext<ApplicationUser>
 {
 
 

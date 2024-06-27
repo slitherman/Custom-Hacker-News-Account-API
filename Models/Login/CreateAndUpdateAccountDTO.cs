@@ -1,4 +1,4 @@
-﻿namespace Custom_Hacker_News_Account_API.Models.DTOS
+﻿namespace Custom_Hacker_News_Account_API.Models.Login
 {
     public class CreateAndUpdateAccountDTO
     {
@@ -16,6 +16,6 @@
 
         public string Username { get; set; } = null!;
 
-   
+
     }
 }
