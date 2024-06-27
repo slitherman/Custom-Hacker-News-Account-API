@@ -1,5 +1,5 @@
 ﻿using Custom_Hacker_News_Account_API.Manual_Mapping;
-using Custom_Hacker_News_Account_API.Models;
+using Custom_Hacker_News_Account_API.Models.Context;
 using Custom_Hacker_News_Account_API.Models.DTOS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;

@@ -1,5 +1,6 @@
 global using Custom_Hacker_News_Account_API.Models;
 global using Microsoft.EntityFrameworkCore;
+using Custom_Hacker_News_Account_API.Models.Context;
 using Custom_Hacker_News_Account_API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AccountDbContext>(opt  =>
-{
-    opt.EnableSensitiveDataLogging();
-});
+ConfigureDbContext(builder);
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
@@ -47,3 +45,17 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+static void ConfigureDbContext(WebApplicationBuilder builder)
+{
+    var connectionString = Secret.Conn;
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("Connection string is null or empty.");
+    }
+
+    builder.Services.AddDbContext<AccountDbContext>(options =>
+        options.UseSqlServer(connectionString)
+               .EnableSensitiveDataLogging());
+}

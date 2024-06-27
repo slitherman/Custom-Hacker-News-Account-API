@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Custom_Hacker_News_Account_API.Models;
+namespace Custom_Hacker_News_Account_API.Models.Context;
 
 public partial class AccountDbContext : DbContext
 {
-    public AccountDbContext()
-    {
-    }
+
 
     public AccountDbContext(DbContextOptions<AccountDbContext> options)
         : base(options)
     {
     }
+       
 
     public virtual DbSet<AccountInfo> AccountInfos { get; set; }
 
@@ -22,8 +21,13 @@ public partial class AccountDbContext : DbContext
     public virtual DbSet<Post> Posts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:hnprojserver.database.windows.net,1433;Initial Catalog=AccountDb;Persist Security Info=False;User ID=HNAdmin;Password=Superadmin4433;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = Secret.Conn;
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
