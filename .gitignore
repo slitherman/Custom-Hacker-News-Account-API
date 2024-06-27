@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /appsettings.json
 /Models/Secret.cs
+/Models/Helper/JwtSettings.cs
+/Models/Helper/Secret.cs
