@@ -4,18 +4,15 @@ namespace Custom_Hacker_News_Account_API.Models.Login
 {
     public class ApplicationUser: IdentityUser
     {
-        public int AccountId { get; set; }
 
-        public string Firstname { get; set; } = null!;
 
-        public string Lastname { get; set; } = null!;
-
-        public string Email { get; set; } = null!;
-
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
         public DateTime BirthDate { get; set; }
-
-        public string Username { get; set; } = null!;
-
         public bool IsBanned { get; set; }
+        public string? Role { get; set; }
+
+
+
     }
 }

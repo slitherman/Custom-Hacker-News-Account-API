@@ -21,6 +21,8 @@ public partial class AccountInfo
 
     public bool IsBanned { get; set; }
 
+    public string? Role { get; set; }
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();

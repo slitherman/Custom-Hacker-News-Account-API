@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Custom_Hacker_News_Account_API.Models.Helper;
 using Custom_Hacker_News_Account_API.Models.Login;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,9 @@ public partial class AccountDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<AccountInfo>(entity =>
         {
             entity.HasKey(e => e.AccountId).HasName("PK__Account___46A222CDC7EC69D9");

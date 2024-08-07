@@ -1,6 +1,5 @@
 ﻿using Custom_Hacker_News_Account_API.Models;
 using Custom_Hacker_News_Account_API.Models.DTOS;
-using Custom_Hacker_News_Account_API.Models.Login;
 using Microsoft.Extensions.Hosting;
 using System.Runtime.CompilerServices;
 

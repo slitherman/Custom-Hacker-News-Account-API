@@ -21,6 +21,8 @@ public partial class Post
 
     public string? Username { get; set; }
 
+    public DateTime? TimeCreated { get; set; }
+
     public virtual AccountInfo Account { get; set; } = null!;
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

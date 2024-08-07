@@ -1,4 +1,5 @@
-﻿using Custom_Hacker_News_Account_API.Models.Login;
+﻿using Custom_Hacker_News_Account_API.Models.DTOS;
+using Custom_Hacker_News_Account_API.Models.Login;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
